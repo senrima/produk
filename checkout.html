@@ -343,6 +343,7 @@
         };
 
         // --- Event Listeners ---
+        // Fungsi ini dijalankan saat halaman selesai dimuat
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const productIdFromUrl = urlParams.get('idproduk');
@@ -353,16 +354,103 @@
             }
         });
 
+        // Fungsi untuk tombol menu mobile
         menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
+        // Fungsi untuk tombol "Kirim OTP ke Email"
         sendTokenBtn.addEventListener('click', async () => {
-            // ... (logika kirim OTP tetap sama)
+            if (fullNameInput.value.trim() === '' || emailInput.value.trim() === '') {
+                alert('Nama dan Email harus diisi.');
+                return;
+            }
+
+            sendTokenBtn.disabled = true;
+            sendTokenBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Mengirim...
+            `;
+            
+            const payload = {
+                kontrol: 'proteksi',
+                action: 'kirimotpbayar',
+                email: emailInput.value,
+                nama: fullNameInput.value
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (response.ok && result.status === 'sukses') {
+                    userDetailsStep.disabled = true; 
+                    sendTokenBtn.classList.add('hidden'); 
+                    tokenVerificationStep.classList.remove('hidden');
+                    tokenFeedback.textContent = `OTP telah dikirim ke ${emailInput.value}`;
+                    tokenFeedback.classList.add('text-blue-600');
+                } else {
+                    alert(result.message || 'Gagal mengirim OTP. Silakan coba lagi.');
+                    sendTokenBtn.disabled = false;
+                    sendTokenBtn.innerHTML = 'Kirim OTP ke Email';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan. Periksa koneksi Anda dan coba lagi.');
+                sendTokenBtn.disabled = false;
+                sendTokenBtn.innerHTML = 'Kirim OTP ke Email';
+            }
         });
 
+        // Fungsi untuk tombol "Verifikasi OTP"
         verifyTokenBtn.addEventListener('click', async () => {
-            // ... (logika verifikasi OTP tetap sama)
+            if (tokenInput.value.trim() === '') {
+                alert('Kode OTP harus diisi.');
+                return;
+            }
+            
+            verifyTokenBtn.disabled = true;
+            verifyTokenBtn.innerHTML = 'Memverifikasi...';
+
+            const payload = {
+                kontrol: 'proteksi',
+                action: 'cekotpbayar',
+                email: emailInput.value,
+                otp: tokenInput.value
+            };
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (response.ok && result.status === 'sukses') {
+                    tokenVerificationStep.classList.add('hidden'); 
+                    verificationSuccessMessage.classList.remove('hidden'); 
+                    paymentMethodStep.disabled = false;
+                    payNowBtn.disabled = false;
+                } else {
+                    tokenFeedback.textContent = result.message || 'OTP salah. Silakan coba lagi.';
+                    tokenFeedback.classList.remove('text-green-600', 'text-blue-600');
+                    tokenFeedback.classList.add('text-red-500');
+                    verifyTokenBtn.disabled = false;
+                    verifyTokenBtn.innerHTML = 'Verifikasi OTP';
+                }
+            } catch(error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan saat verifikasi.');
+                verifyTokenBtn.disabled = false;
+                verifyTokenBtn.innerHTML = 'Verifikasi OTP';
+            }
         });
 
+        // Fungsi untuk tombol kupon
         applyCouponBtn.addEventListener('click', () => {
             const code = couponCodeInput.value.toUpperCase().trim();
             const coupon = validCoupons[code];
