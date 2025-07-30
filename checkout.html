@@ -156,6 +156,12 @@
                                         <button type="button" id="verify-token-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">Verifikasi OTP</button>
                                     </div>
                                 </fieldset>
+                                
+                                <!-- Step 2.5: Verification Success Message -->
+                                <div id="verification-success-message" class="hidden">
+                                     <p class="text-center text-green-600 bg-green-100 p-4 rounded-lg font-semibold">Akun ini sudah terverifikasi.</p>
+                                </div>
+
 
                                 <!-- Step 3: Payment Method -->
                                 <fieldset id="payment-method-step" disabled>
@@ -210,6 +216,7 @@
         // Payment Elements
         const userDetailsStep = document.getElementById('user-details-step');
         const tokenVerificationStep = document.getElementById('token-verification-step');
+        const verificationSuccessMessage = document.getElementById('verification-success-message');
         const paymentMethodStep = document.getElementById('payment-method-step');
         
         const fullNameInput = document.getElementById('full_name');
@@ -270,7 +277,7 @@
             
             const apiUrl = 'https://api.senrima.web.id';
             const payload = {
-                kontrol: 'proteksi', // Menggunakan 'proteksi' sesuai struktur skrip Anda
+                kontrol: 'proteksi',
                 action: 'kirimotpbayar',
                 email: emailInput.value,
                 nama: fullNameInput.value
@@ -279,14 +286,14 @@
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Sesuai dengan Apps Script
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
 
                 const result = await response.json();
 
                 if (response.ok && result.status === 'sukses') {
-                    userDetailsStep.disabled = true;
+                    sendTokenBtn.classList.add('hidden'); // Sembunyikan tombol
                     tokenVerificationStep.classList.remove('hidden');
                     tokenFeedback.textContent = `OTP telah dikirim ke ${emailInput.value}`;
                     tokenFeedback.classList.add('text-blue-600');
@@ -331,11 +338,9 @@
                 const result = await response.json();
 
                 if (response.ok && result.status === 'sukses') {
-                    tokenFeedback.textContent = 'Verifikasi berhasil!';
-                    tokenFeedback.classList.remove('text-red-500', 'text-blue-600');
-                    tokenFeedback.classList.add('text-green-600');
+                    tokenVerificationStep.classList.add('hidden'); // Sembunyikan form token
+                    verificationSuccessMessage.classList.remove('hidden'); // Tampilkan pesan sukses
                     
-                    tokenVerificationStep.disabled = true;
                     paymentMethodStep.disabled = false;
                     payNowBtn.disabled = false;
                 } else {
