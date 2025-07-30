@@ -293,6 +293,7 @@
                 const result = await response.json();
 
                 if (response.ok && result.status === 'sukses') {
+                    userDetailsStep.disabled = true; // Nonaktifkan form nama & email
                     sendTokenBtn.classList.add('hidden'); // Sembunyikan tombol
                     tokenVerificationStep.classList.remove('hidden');
                     tokenFeedback.textContent = `OTP telah dikirim ke ${emailInput.value}`;
