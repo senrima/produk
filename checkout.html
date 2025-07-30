@@ -19,6 +19,15 @@
             background-color: #F9FAFB; /* Light Gray background */
             color: #1F2937;
         }
+        /* Style for disabled fieldset */
+        fieldset:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        /* Style for loading button */
+        button:disabled {
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -78,41 +87,40 @@
                     <div class="bg-white p-8 rounded-2xl border border-gray-200">
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
                         
-                        <!-- Item Produk -->
                         <div class="flex items-center space-x-4 mb-6">
                             <img src="https://placehold.co/100x100/F3F4F6/4F46E5?text=Produk" alt="[Gambar Produk]" class="w-20 h-20 rounded-lg object-cover">
                             <div>
                                 <h3 class="font-semibold text-gray-800">Nebula - AI Automation Mastery</h3>
                                 <p class="text-gray-500">Video Course</p>
                             </div>
-                            <p class="font-semibold text-gray-800 ml-auto">Rp 2.200.000</p>
+                            <p class="font-semibold text-gray-800 ml-auto" id="product-price" data-price="2200000">Rp 2.200.000</p>
                         </div>
 
-                        <!-- Kolom Kupon -->
                         <div class="mb-6">
                             <label for="coupon_code" class="block text-sm font-medium text-gray-700 mb-1">Kode Kupon</label>
                             <div class="flex space-x-2">
                                 <input type="text" id="coupon_code" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Masukkan kode kupon">
-                                <button type="button" class="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Terapkan</button>
+                                <button type="button" id="apply-coupon-btn" class="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">Terapkan</button>
                             </div>
+                            <p id="coupon-feedback" class="text-sm mt-2"></p>
                         </div>
 
                         <div class="border-t border-gray-200 pt-6 space-y-4">
                             <div class="flex justify-between text-gray-600">
                                 <span>Subtotal</span>
-                                <span>Rp 2.200.000</span>
+                                <span id="subtotal-amount">Rp 2.200.000</span>
                             </div>
                              <div class="flex justify-between text-green-600">
                                 <span>Diskon</span>
-                                <span>- Rp 0</span>
+                                <span id="discount-amount">- Rp 0</span>
                             </div>
                             <div class="flex justify-between text-gray-600">
                                 <span>Biaya Layanan</span>
-                                <span>Rp 5.000</span>
+                                <span id="service-fee" data-fee="5000">Rp 5.000</span>
                             </div>
                             <div class="flex justify-between font-bold text-gray-900 text-lg">
                                 <span>Total</span>
-                                <span>Rp 2.205.000</span>
+                                <span id="total-amount">Rp 2.205.000</span>
                             </div>
                         </div>
                     </div>
@@ -120,62 +128,65 @@
                     <!-- Kolom Kanan: Detail Pembayaran -->
                     <div class="bg-white p-8 rounded-2xl border border-gray-200">
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">Detail Pembayaran</h2>
-                        <form action="#">
+                        <form id="payment-form" onsubmit="return false;">
                             <div class="space-y-6">
-                                <!-- Nama Lengkap -->
-                                <div>
-                                    <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                    <input type="text" id="full_name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Masukkan nama Anda">
-                                </div>
-                                <!-- Alamat Email -->
-                                <div>
-                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
-                                    <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="email@anda.com">
-                                </div>
-
-                                <!-- Metode Pembayaran -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Metode Pembayaran</label>
-                                    <div class="space-y-3">
-                                        <label for="qris" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
-                                            <input type="radio" id="qris" name="payment_method" value="qris" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
-                                            <span class="ml-3 font-medium text-gray-800">QRIS (Semua e-wallet & m-banking)</span>
-                                        </label>
-                                        <label for="card" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
-                                            <input type="radio" id="card" name="payment_method" value="card" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                                            <span class="ml-3 font-medium text-gray-800">Kartu Kredit / Debit</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <!-- Detail Pembayaran (QRIS) -->
-                                <div id="qris-details">
-                                    <p class="text-center text-gray-600 mb-4">Scan kode QR di bawah ini</p>
-                                    <img src="https://placehold.co/300x300/FFFFFF/000000?text=QRIS+CODE" alt="[Kode QRIS]" class="mx-auto rounded-lg border border-gray-200">
-                                </div>
-
-                                <!-- Detail Pembayaran (Kartu) - Hidden by default -->
-                                <div id="card-details" class="hidden space-y-4">
-                                    <div>
-                                        <label for="card_number" class="block text-sm font-medium text-gray-700 mb-1">Nomor Kartu</label>
-                                        <input type="text" id="card_number" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0000 0000 0000 0000">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-4">
+                                <!-- Step 1: User Details -->
+                                <fieldset id="user-details-step">
+                                    <div class="space-y-4">
                                         <div>
-                                            <label for="expiry_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kedaluwarsa</label>
-                                            <input type="text" id="expiry_date" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="MM / YY">
+                                            <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                                            <input type="text" id="full_name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Masukkan nama Anda" required>
                                         </div>
                                         <div>
-                                            <label for="cvc" class="block text-sm font-medium text-gray-700 mb-1">CVC</label>
-                                            <input type="text" id="cvc" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="123">
+                                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
+                                            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="email@anda.com" required>
                                         </div>
+                                        <button type="button" id="send-token-btn" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">Kirim OTP ke Email</button>
                                     </div>
-                                </div>
+                                </fieldset>
 
-                                <!-- Tombol Bayar -->
-                                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity">
-                                    Bayar Sekarang
-                                </button>
+                                <!-- Step 2: Token Verification -->
+                                <fieldset id="token-verification-step" class="hidden">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="token" class="block text-sm font-medium text-gray-700 mb-1">Kode OTP</label>
+                                            <input type="text" id="token" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Masukkan 6 digit OTP" required>
+                                            <p id="token-feedback" class="text-sm mt-2"></p>
+                                        </div>
+                                        <button type="button" id="verify-token-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">Verifikasi OTP</button>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Step 3: Payment Method -->
+                                <fieldset id="payment-method-step" disabled>
+                                    <div class="space-y-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Metode Pembayaran</label>
+                                            <div class="space-y-3">
+                                                <label for="qris" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
+                                                    <input type="radio" id="qris" name="payment_method" value="qris" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                                                    <span class="ml-3 font-medium text-gray-800">QRIS (Semua e-wallet & m-banking)</span>
+                                                </label>
+                                                <label for="card" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
+                                                    <input type="radio" id="card" name="payment_method" value="card" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                                    <span class="ml-3 font-medium text-gray-800">Metode Pembayaran Lain</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div id="qris-details">
+                                            <p class="text-center text-gray-600 bg-gray-100 p-4 rounded-lg">Anda akan melihat kode QR setelah menekan tombol "Bayar Sekarang".</p>
+                                        </div>
+
+                                        <div id="card-details" class="hidden">
+                                            <p class="text-center text-gray-600 bg-gray-100 p-4 rounded-lg">Anda akan diarahkan ke halaman pembayaran setelah menekan tombol "Bayar Sekarang".</p>
+                                        </div>
+
+                                        <button type="submit" id="pay-now-btn" class="w-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity" disabled>
+                                            Bayar Sekarang
+                                        </button>
+                                    </div>
+                                </fieldset>
                             </div>
                         </form>
                     </div>
@@ -192,28 +203,180 @@
     </footer>
 
     <script>
-        // Logika untuk Menu Mobile
+        // --- Setup Element ---
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Logika untuk Metode Pembayaran
+        
+        // Payment Elements
+        const userDetailsStep = document.getElementById('user-details-step');
+        const tokenVerificationStep = document.getElementById('token-verification-step');
+        const paymentMethodStep = document.getElementById('payment-method-step');
+        
+        const fullNameInput = document.getElementById('full_name');
+        const emailInput = document.getElementById('email');
+        const sendTokenBtn = document.getElementById('send-token-btn');
+        
+        const tokenInput = document.getElementById('token');
+        const verifyTokenBtn = document.getElementById('verify-token-btn');
+        const tokenFeedback = document.getElementById('token-feedback');
+        
         const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
         const qrisDetails = document.getElementById('qris-details');
         const cardDetails = document.getElementById('card-details');
+        const payNowBtn = document.getElementById('pay-now-btn');
+
+        // Coupon Elements
+        const applyCouponBtn = document.getElementById('apply-coupon-btn');
+        const couponCodeInput = document.getElementById('coupon_code');
+        const couponFeedback = document.getElementById('coupon-feedback');
+        const subtotalEl = document.getElementById('subtotal-amount');
+        const discountEl = document.getElementById('discount-amount');
+        const serviceFeeEl = document.getElementById('service-fee');
+        const totalEl = document.getElementById('total-amount');
+        const productPriceEl = document.getElementById('product-price');
+
+        // --- Data ---
+        const subtotalValue = parseFloat(productPriceEl.getAttribute('data-price'));
+        const serviceFeeValue = parseFloat(serviceFeeEl.getAttribute('data-fee'));
+        const validCoupons = { 'HEMAT50': { type: 'fixed', value: 50000 }, 'DISKON10': { type: 'percentage', value: 0.10 } };
+        let currentDiscount = 0;
+
+        // --- Helper Functions ---
+        const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        
+        const updateSummary = () => {
+            const total = subtotalValue - currentDiscount + serviceFeeValue;
+            discountEl.textContent = `- ${formatCurrency(currentDiscount)}`;
+            totalEl.textContent = formatCurrency(total);
+        };
+
+        // --- Event Listeners ---
+        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        sendTokenBtn.addEventListener('click', async () => {
+            if (fullNameInput.value.trim() === '' || emailInput.value.trim() === '') {
+                alert('Nama dan Email harus diisi.');
+                return;
+            }
+
+            sendTokenBtn.disabled = true;
+            sendTokenBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Mengirim...
+            `;
+            
+            const apiUrl = 'https://api.senrima.web.id';
+            const payload = {
+                kontrol: 'proteksi', // Menggunakan 'proteksi' sesuai struktur skrip Anda
+                action: 'kirimotpbayar',
+                email: emailInput.value,
+                nama: fullNameInput.value
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Sesuai dengan Apps Script
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'sukses') {
+                    userDetailsStep.disabled = true;
+                    tokenVerificationStep.classList.remove('hidden');
+                    tokenFeedback.textContent = `OTP telah dikirim ke ${emailInput.value}`;
+                    tokenFeedback.classList.add('text-blue-600');
+                } else {
+                    alert(result.message || 'Gagal mengirim OTP. Silakan coba lagi.');
+                    sendTokenBtn.disabled = false;
+                    sendTokenBtn.innerHTML = 'Kirim OTP ke Email';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan. Periksa koneksi Anda dan coba lagi.');
+                sendTokenBtn.disabled = false;
+                sendTokenBtn.innerHTML = 'Kirim OTP ke Email';
+            }
+        });
+
+        verifyTokenBtn.addEventListener('click', async () => {
+            if (tokenInput.value.trim() === '') {
+                alert('Kode OTP harus diisi.');
+                return;
+            }
+            
+            verifyTokenBtn.disabled = true;
+            verifyTokenBtn.innerHTML = 'Memverifikasi...';
+
+            const apiUrl = 'https://api.senrima.web.id';
+            const payload = {
+                kontrol: 'proteksi',
+                action: 'cekotpbayar',
+                email: emailInput.value,
+                otp: tokenInput.value
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+
+                if (response.ok && result.status === 'sukses') {
+                    tokenFeedback.textContent = 'Verifikasi berhasil!';
+                    tokenFeedback.classList.remove('text-red-500', 'text-blue-600');
+                    tokenFeedback.classList.add('text-green-600');
+                    
+                    tokenVerificationStep.disabled = true;
+                    paymentMethodStep.disabled = false;
+                    payNowBtn.disabled = false;
+                } else {
+                    tokenFeedback.textContent = result.message || 'OTP salah. Silakan coba lagi.';
+                    tokenFeedback.classList.remove('text-green-600', 'text-blue-600');
+                    tokenFeedback.classList.add('text-red-500');
+                    verifyTokenBtn.disabled = false;
+                    verifyTokenBtn.innerHTML = 'Verifikasi OTP';
+                }
+
+            } catch(error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan saat verifikasi.');
+                verifyTokenBtn.disabled = false;
+                verifyTokenBtn.innerHTML = 'Verifikasi OTP';
+            }
+        });
 
         paymentMethodRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
-                if (event.target.value === 'qris') {
-                    qrisDetails.style.display = 'block';
-                    cardDetails.style.display = 'none';
-                } else {
-                    qrisDetails.style.display = 'none';
-                    cardDetails.style.display = 'block';
-                }
+                qrisDetails.style.display = (event.target.value === 'qris') ? 'block' : 'none';
+                cardDetails.style.display = (event.target.value === 'card') ? 'block' : 'none';
             });
+        });
+
+        applyCouponBtn.addEventListener('click', () => {
+            const code = couponCodeInput.value.toUpperCase().trim();
+            const coupon = validCoupons[code];
+
+            if (coupon) {
+                currentDiscount = (coupon.type === 'fixed') ? coupon.value : subtotalValue * coupon.value;
+                couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
+                couponFeedback.classList.add('text-green-600');
+                couponFeedback.classList.remove('text-red-500');
+            } else {
+                currentDiscount = 0;
+                couponFeedback.textContent = 'Kode kupon tidak valid.';
+                couponFeedback.classList.add('text-red-500');
+                couponFeedback.classList.remove('text-green-600');
+            }
+            updateSummary();
         });
     </script>
 </body>
