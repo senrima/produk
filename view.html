@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semua Produk - S-Tools ID</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFFFFF;
+            color: #1F2937;
+        }
+        .text-gradient {
+            background-image: linear-gradient(90deg, #4F46E5, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        /* Style untuk Video Popup (Modal) */
+        #video-modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #video-modal-content {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        
+        /* Filter button active state */
+        .filter-btn.active {
+            background-color: #4F46E5;
+            color: #FFFFFF;
+            border-color: #4F46E5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header Section -->
+    <header class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="flex items-center gap-3 text-2xl font-bold text-gray-900">
+                    <img src="stools_logo.png" alt="S-Tools ID Logo" class="h-8 w-auto">
+                    <span>S-Tools ID</span>
+                </a>
+                <!-- Navigasi Desktop -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="/#tentang" class="text-gray-600 hover:text-indigo-600 transition-colors">Tentang</a>
+                    <a href="/#layanan" class="text-gray-600 hover:text-indigo-600 transition-colors">Layanan</a>
+                    <a href="View.html" class="text-indigo-600 font-semibold">Produk</a>
+                    <a href="/#kontak" class="text-gray-600 hover:text-indigo-600 transition-colors">Kontak</a>
+                    <a href="https://s-tools.id/app/" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all transform hover:scale-105">
+                        Akses
+                    </a>
+                </nav>
+                <!-- Tombol Hamburger untuk Mobile -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-gray-800 hover:text-indigo-600 focus:outline-none">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Navigasi Mobile -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4">
+                <a href="/#tentang" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Tentang</a>
+                <a href="/#layanan" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Layanan</a>
+                <a href="View.html" class="block py-2 px-4 text-indigo-600 bg-gray-100 rounded-lg font-semibold">Produk</a>
+                <a href="/#kontak" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Kontak</a>
+                <a href="https://s-tools.id/app/" class="block text-center mt-4 bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 w-full">
+                    Akses
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Product Catalog Section -->
+        <section id="produk-list" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <!-- Judul Halaman -->
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Semua Produk</h1>
+                    <p class="text-lg text-gray-600 mt-2">Temukan semua aset digital yang Anda butuhkan di sini.</p>
+                </div>
+
+                <!-- Filter Buttons -->
+                <div class="flex justify-center flex-wrap gap-3 mb-12">
+                    <button class="filter-btn active py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="all">Semua</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="tools">Tools</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="ebook">Ebook</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="tutorial">Tutorial</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="video">Video Course</button>
+                </div>
+                
+                <!-- Product Grid -->
+                <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- PRODUK 1 (TOOLS) -->
+                    <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="tools">
+                        <div class="relative mb-4 overflow-hidden rounded-lg group">
+                            <img src="https://placehold.co/600x340/F3F4F6/4F46E5?text=Tonton+Demo+%27Aura%27" alt="[Gambar Demo Aura]" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-300">
+                            <button class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 open-modal" data-video-id="dQw4w9WgXcQ">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex flex-col flex-grow">
+                            <p class="text-3xl font-bold text-gray-900">Rp 1.500.000</p>
+                            <span class="text-sm font-semibold text-indigo-600 mt-2">SKRIP KECERDASAN BUATAN</span>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-1">Aura - Predictive Text Generator</h3>
+                            <p class="text-gray-600 my-3 flex-grow">Skrip Python bertenaga AI untuk menghasilkan teks marketing yang persuasif.</p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="https://www.google.com" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">Beli Sekarang</a>
+                        </div>
+                    </div>
+                    
+                    <!-- PRODUK 2 (EBOOK) -->
+                    <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="ebook">
+                        <div class="relative mb-4 overflow-hidden rounded-lg group">
+                            <img src="https://placehold.co/600x340/F3F4F6/10B981?text=Panduan+SEO" alt="[Gambar Ebook SEO]" class="w-full h-auto">
+                        </div>
+                        <div class="flex flex-col flex-grow">
+                            <p class="text-3xl font-bold text-gray-900">Rp 250.000</p>
+                            <span class="text-sm font-semibold text-emerald-600 mt-2">EBOOK</span>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-1">Panduan SEO Modern 2025</h3>
+                            <p class="text-gray-600 my-3 flex-grow">Strategi lengkap untuk mendominasi halaman pertama Google.</p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="https://www.google.com" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">Beli Sekarang</a>
+                        </div>
+                    </div>
+                    
+                    <!-- PRODUK 3 (VIDEO) -->
+                    <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="video">
+                        <div class="relative mb-4 overflow-hidden rounded-lg group">
+                            <img src="https://placehold.co/600x340/F3F4F6/4F46E5?text=Lihat+Materi+%27Nebula%27" alt="[Gambar Video Course Nebula]" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-300">
+                            <button class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 open-modal" data-video-id="yfxnLujLS7c">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex flex-col flex-grow">
+                             <p class="text-3xl font-bold text-gray-900">Rp 2.200.000</p>
+                             <span class="text-sm font-semibold text-indigo-600 mt-2">VIDEO COURSE</span>
+                             <h3 class="text-2xl font-bold text-gray-900 mt-1">Nebula - AI Automation Mastery</h3>
+                             <p class="text-gray-600 my-3 flex-grow">10+ jam kursus video membangun agen AI otonom dari nol.</p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="https://www.google.com" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">Beli Sekarang</a>
+                        </div>
+                    </div>
+
+                    <!-- PRODUK 4 (TUTORIAL) -->
+                    <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="tutorial">
+                        <div class="relative mb-4 overflow-hidden rounded-lg group">
+                            <img src="https://placehold.co/600x340/F3F4F6/F59E0B?text=Automasi+N8N" alt="[Gambar Tutorial N8N]" class="w-full h-auto">
+                        </div>
+                        <div class="flex flex-col flex-grow">
+                            <p class="text-3xl font-bold text-gray-900">Rp 650.000</p>
+                            <span class="text-sm font-semibold text-amber-600 mt-2">TUTORIAL</span>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-1">Automasi Cerdas dengan N8N</h3>
+                            <p class="text-gray-600 my-3 flex-grow">Bangun alur kerja otomatis untuk bisnis Anda tanpa coding.</p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="https://www.google.com" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">Beli Sekarang</a>
+                        </div>
+                    </div>
+
+                    <!-- PRODUK 5 (TOOLS) -->
+                    <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="tools">
+                        <div class="relative mb-4 overflow-hidden rounded-lg group">
+                            <img src="https://placehold.co/600x340/F3F4F6/3B82F6?text=Tonton+Demo+%27Orion%27" alt="[Gambar Demo Orion]" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-300">
+                            <button class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 open-modal" data-video-id="o3369P44P5M">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex flex-col flex-grow">
+                            <p class="text-3xl font-bold text-gray-900">Rp 500.000<span class="text-base font-normal text-gray-500">/bulan</span></p>
+                            <span class="text-sm font-semibold text-blue-600 mt-2">PLATFORM SAAS</span>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-1">Orion - Insight Dashboard</h3>
+                            <p class="text-gray-600 my-3 flex-grow">Platform analitik untuk visualisasi data cerdas dan mudah dipahami.</p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="https://www.google.com" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">Langganan</a>
+                        </div>
+                    </div>
+
+                    <!-- PRODUK 6 (VIDEO) -->
+                     <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="video">
+                        <div class="relative mb-4 overflow-hidden rounded-lg group">
+                            <img src="https://placehold.co/600x340/F3F4F6/4F46E5?text=Lihat+Materi+%27Ads%27" alt="[Gambar Video Course Ads]" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-300">
+                            <button class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 open-modal" data-video-id="L3ktUWfN-jc">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex flex-col flex-grow">
+                             <p class="text-3xl font-bold text-gray-900">Rp 1.800.000</p>
+                             <span class="text-sm font-semibold text-indigo-600 mt-2">VIDEO COURSE</span>
+                             <h3 class="text-2xl font-bold text-gray-900 mt-1">Digital Advertising Pro</h3>
+                             <p class="text-gray-600 my-3 flex-grow">Kuasai FB, Google, & TikTok Ads untuk melipatgandakan ROI.</p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="https://www.google.com" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">Beli Sekarang</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-8 border-t border-gray-200">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2025 S-Tools ID. Semua Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+    
+    <!-- Video Modal -->
+    <div id="video-modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4" style="opacity: 0;">
+        <div id="video-modal-content" class="bg-white w-full max-w-4xl aspect-video rounded-lg shadow-xl relative" style="transform: scale(0.9); opacity: 0;">
+            <button id="close-modal" class="absolute -top-3 -right-3 text-white bg-red-600 rounded-full h-8 w-8 flex items-center justify-center z-10">&times;</button>
+            <iframe id="video-iframe" class="w-full h-full rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi Feather Icons
+        feather.replace();
+
+        // Logika untuk Menu Mobile
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Logika Video Modal (Popup)
+        const openModalButtons = document.querySelectorAll('.open-modal');
+        const closeModalButton = document.getElementById('close-modal');
+        const modalOverlay = document.getElementById('video-modal-overlay');
+        const modalContent = document.getElementById('video-modal-content');
+        const videoIframe = document.getElementById('video-iframe');
+
+        const openModal = (videoId) => {
+            videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            modalOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                modalOverlay.style.opacity = '1';
+                modalContent.style.opacity = '1';
+                modalContent.style.transform = 'scale(1)';
+            }, 10);
+        };
+
+        const closeModal = () => {
+            modalOverlay.style.opacity = '0';
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'scale(0.9)';
+            document.body.style.overflow = 'auto';
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+                videoIframe.src = '';
+            }, 300);
+        };
+
+        openModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const videoId = button.getAttribute('data-video-id');
+                openModal(videoId);
+            });
+        });
+
+        closeModalButton.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                closeModal();
+            }
+        });
+        
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Logika untuk Filter Produk
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const productCards = document.querySelectorAll('.product-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Set active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const filter = button.getAttribute('data-filter');
+
+                // Show/hide product cards
+                productCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
