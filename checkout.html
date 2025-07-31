@@ -11,7 +11,7 @@
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display.swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body {
@@ -37,7 +37,7 @@
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <a href="/" class="flex items-center gap-3 text-2xl font-bold text-gray-900">
-                    <img src="stools_logo.png" alt="S-Tools ID Logo" class="h-8 w-auto">
+                    <img src="stools_logo.png" alt="Logo S-Tools ID" class="h-8 w-auto">
                     <span>S-Tools ID</span>
                 </a>
                 <!-- Navigasi Desktop -->
@@ -248,6 +248,10 @@
         const applyCouponBtn = document.getElementById('apply-coupon-btn');
         const couponCodeInput = document.getElementById('coupon_code');
         const couponFeedback = document.getElementById('coupon-feedback');
+        const summaryLoading = document.getElementById('summary-loading');
+        const summaryContent = document.getElementById('summary-content');
+        const summaryError = document.getElementById('summary-error');
+        const summaryErrorMessage = document.getElementById('summary-error-message');
         const productIdEl = document.getElementById('product-id');
         const productNameEl = document.getElementById('product-name');
         const productCategoryEl = document.getElementById('product-category');
@@ -259,7 +263,7 @@
 
         // --- Data ---
         const validCoupons = { 'HEMAT50': { type: 'fixed', value: 50000 }, 'DISKON10': { type: 'percentage', value: 0.10 } };
-        const API_URL = 'https://api.senrima.web.id';
+        const API_URL = 'https://api.senrima.web.id'; // Ganti dengan URL Web App Anda
 
         // --- Helper Functions ---
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
@@ -301,13 +305,17 @@
                     productCategoryEl.textContent = `Kategori: ${orderData.kategori}`;
                     productPriceEl.textContent = formatCurrency(orderData.hargaProduk);
                     updateSummary();
+
+                    summaryLoading.classList.add('hidden');
+                    summaryContent.classList.remove('hidden');
                 } else {
-                    productNameEl.textContent = 'Produk tidak ditemukan';
-                    productCategoryEl.textContent = '-';
+                    throw new Error(result.message || 'Produk tidak ditemukan.');
                 }
             } catch (error) {
                 console.error("Gagal mengambil data produk:", error);
-                productNameEl.textContent = 'Gagal memuat data';
+                summaryErrorMessage.textContent = `Error: ${error.message}`;
+                summaryLoading.classList.add('hidden');
+                summaryError.classList.remove('hidden');
             }
         };
 
@@ -357,21 +365,21 @@
         };
 
         // --- Event Listeners ---
-        // Fungsi ini dijalankan saat halaman selesai dimuat
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const productIdFromUrl = urlParams.get('idproduk');
+            const productIdFromUrl = urlParams.get('productid');
+            
             if (productIdFromUrl) {
                 fetchProductData(productIdFromUrl);
             } else {
-                productNameEl.textContent = 'ID Produk tidak valid.';
+                summaryErrorMessage.textContent = 'Error: ID Produk tidak ditemukan di URL.';
+                summaryLoading.classList.add('hidden');
+                summaryError.classList.remove('hidden');
             }
         });
 
-        // Fungsi untuk tombol menu mobile
         menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
-        // Fungsi untuk tombol "Kirim OTP ke Email"
         sendTokenBtn.addEventListener('click', async () => {
             if (fullNameInput.value.trim() === '' || emailInput.value.trim() === '') {
                 alert('Nama dan Email harus diisi.');
@@ -420,7 +428,6 @@
             }
         });
 
-        // Fungsi untuk tombol "Verifikasi OTP"
         verifyTokenBtn.addEventListener('click', async () => {
             if (tokenInput.value.trim() === '') {
                 alert('Kode OTP harus diisi.');
@@ -464,7 +471,6 @@
             }
         });
 
-        // Fungsi untuk tombol kupon
         applyCouponBtn.addEventListener('click', () => {
             const code = couponCodeInput.value.toUpperCase().trim();
             const coupon = validCoupons[code];
