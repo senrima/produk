@@ -217,7 +217,7 @@
 
     <script>
         // --- Objek Global untuk Data Pesanan ---
-        const orderData = {
+        let orderData = {
             idProduk: null,
             namaProduk: null,
             kategori: null,
@@ -289,7 +289,6 @@
             serviceFeeEl.textContent = formatCurrency(serviceFee);
             totalEl.textContent = formatCurrency(orderData.totalPembayaran);
 
-            // --- LOGIKA BARU UNTUK MENYESUAIKAN METODE PEMBAYARAN ---
             if (orderData.totalPembayaran <= 0) {
                 qrisLabel.classList.add('hidden');
                 paymentGatewayLabel.classList.add('hidden');
