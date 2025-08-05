@@ -79,34 +79,27 @@
                 <!-- Judul Halaman -->
                 <div class="text-center mb-10">
                     <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Checkout</h1>
-                    <p class="text-lg text-gray-600 mt-2">Selesaikan pesanan Anda dalam beberapa langkah mudah.</p>
+                    <p id="page-subtitle" class="text-lg text-gray-600 mt-2">Memuat detail produk...</p>
                 </div>
 
-                <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Status Container (untuk error atau pesan lain) -->
+                <div id="page-status" class="hidden max-w-4xl mx-auto text-center">
+                    <div class="bg-red-100 text-red-700 p-6 rounded-lg">
+                        <p id="status-message" class="font-semibold"></p>
+                    </div>
+                </div>
+
+                <!-- Checkout Content (disembunyikan sampai data produk valid) -->
+                <div id="checkout-content" class="hidden max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <!-- Kolom Kiri: Ringkasan Pesanan -->
                     <div class="bg-white p-8 rounded-2xl border border-gray-200">
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
                         
-                        <!-- Loading Skeleton -->
-                        <div id="summary-loading" class="animate-pulse">
-                            <div class="h-4 bg-gray-200 rounded w-1/3 mb-4 mx-auto"></div>
-                            <div class="h-6 bg-gray-300 rounded w-3/4 mb-2 mx-auto"></div>
-                            <div class="h-4 bg-gray-200 rounded w-1/2 mb-6 mx-auto"></div>
-                            <div class="h-8 bg-gray-300 rounded w-1/3 mx-auto mt-4"></div>
-                        </div>
-
-                        <!-- Item Produk (Hidden by default) -->
-                        <div id="summary-content" class="hidden">
-                            <div class="text-center mb-6">
-                                <p id="product-id" class="text-sm text-gray-500 font-medium"></p>
-                                <h3 id="product-name" class="font-semibold text-gray-800 text-lg leading-tight my-1"></h3>
-                                <p id="product-category" class="text-gray-600"></p>
-                                <p class="font-semibold text-gray-800 text-lg mt-4 pt-4 border-t border-gray-200" id="product-price" data-price="0"></p>
-                            </div>
-                        </div>
-
-                        <div id="summary-error" class="hidden bg-red-100 text-red-700 p-4 rounded-lg">
-                            <p id="summary-error-message"></p>
+                        <div class="text-center mb-6">
+                            <p id="product-id" class="text-sm text-gray-500 font-medium"></p>
+                            <h3 id="product-name" class="font-semibold text-gray-800 text-lg leading-tight my-1"></h3>
+                            <p id="product-category" class="text-gray-600"></p>
+                            <p class="font-semibold text-gray-800 text-lg mt-4 pt-4 border-t border-gray-200" id="product-price" data-price="0"></p>
                         </div>
 
                         <div class="mb-6">
@@ -235,12 +228,16 @@
             totalPembayaran: 0,
             namaPembeli: '',
             emailPembeli: '',
-            metodePembayaran: 'transfer' // Default diubah ke transfer
+            metodePembayaran: 'transfer'
         };
 
         // --- Setup Element ---
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
+        const pageStatus = document.getElementById('page-status');
+        const statusMessage = document.getElementById('status-message');
+        const pageSubtitle = document.getElementById('page-subtitle');
+        const checkoutContent = document.getElementById('checkout-content');
         const userDetailsStep = document.getElementById('user-details-step');
         const tokenVerificationStep = document.getElementById('token-verification-step');
         const verificationSuccessMessage = document.getElementById('verification-success-message');
@@ -255,10 +252,6 @@
         const applyCouponBtn = document.getElementById('apply-coupon-btn');
         const couponCodeInput = document.getElementById('coupon_code');
         const couponFeedback = document.getElementById('coupon-feedback');
-        const summaryLoading = document.getElementById('summary-loading');
-        const summaryContent = document.getElementById('summary-content');
-        const summaryError = document.getElementById('summary-error');
-        const summaryErrorMessage = document.getElementById('summary-error-message');
         const productIdEl = document.getElementById('product-id');
         const productNameEl = document.getElementById('product-name');
         const productCategoryEl = document.getElementById('product-category');
@@ -269,7 +262,6 @@
         const totalEl = document.getElementById('total-amount');
 
         // --- Data ---
-        const validCoupons = { 'HEMAT50': { type: 'fixed', value: 50000 }, 'DISKON10': { type: 'percentage', value: 0.10 } };
         const API_URL = 'https://api.senrima.web.id'; // Ganti dengan URL Web App Anda
 
         // --- Helper Functions ---
@@ -313,18 +305,23 @@
                     productPriceEl.textContent = formatCurrency(orderData.hargaProduk);
                     updateSummary();
 
-                    summaryLoading.classList.add('hidden');
-                    summaryContent.classList.remove('hidden');
+                    pageSubtitle.textContent = 'Selesaikan pesanan Anda dalam beberapa langkah mudah.';
+                    checkoutContent.classList.remove('hidden');
                 } else {
                     throw new Error(result.message || 'Produk tidak ditemukan.');
                 }
             } catch (error) {
                 console.error("Gagal mengambil data produk:", error);
-                summaryErrorMessage.textContent = `Error: ${error.message}`;
-                summaryLoading.classList.add('hidden');
-                summaryError.classList.remove('hidden');
+                showPageError("Pencarian produk gagal. Silakan kembali ke menu produk untuk checkout ulang.");
             }
         };
+
+        function showPageError(message) {
+            pageSubtitle.classList.add('hidden');
+            statusMessage.textContent = message;
+            pageStatus.classList.remove('hidden');
+            checkoutContent.classList.add('hidden');
+        }
 
         const handleFinalPayment = async (event) => {
             event.preventDefault();
@@ -379,9 +376,7 @@
             if (productIdFromUrl) {
                 fetchProductData(productIdFromUrl);
             } else {
-                summaryErrorMessage.textContent = 'Error: ID Produk tidak ditemukan di URL.';
-                summaryLoading.classList.add('hidden');
-                summaryError.classList.remove('hidden');
+                showPageError("ID Produk tidak ditemukan di URL. Silakan kembali dan pilih produk.");
             }
         });
 
@@ -478,24 +473,52 @@
             }
         });
 
-        applyCouponBtn.addEventListener('click', () => {
-            const code = couponCodeInput.value.toUpperCase().trim();
-            const coupon = validCoupons[code];
+        applyCouponBtn.addEventListener('click', async () => {
+            const code = couponCodeInput.value.trim();
+            if (!code) {
+                alert('Silakan masukkan kode kupon.');
+                return;
+            }
 
-            if (coupon) {
-                orderData.diskon = (coupon.type === 'fixed') ? coupon.value : orderData.hargaProduk * coupon.value;
-                orderData.kodeKupon = code;
-                couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
-                couponFeedback.classList.add('text-green-600');
-                couponFeedback.classList.remove('text-red-500');
-            } else {
+            applyCouponBtn.disabled = true;
+            applyCouponBtn.textContent = '...';
+            couponFeedback.textContent = '';
+
+            const payload = {
+                kontrol: 'proteksi',
+                action: 'cekkupon',
+                kodeKupon: code
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (response.ok && result.status === 'sukses') {
+                    const coupon = result.data;
+                    orderData.diskon = (coupon.tipe === 'fixed') ? parseFloat(coupon.nilai) : orderData.hargaProduk * parseFloat(coupon.nilai);
+                    orderData.kodeKupon = code;
+                    couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
+                    couponFeedback.classList.add('text-green-600');
+                    couponFeedback.classList.remove('text-red-500');
+                } else {
+                    throw new Error(result.message || 'Kupon tidak valid.');
+                }
+            } catch (error) {
                 orderData.diskon = 0;
                 orderData.kodeKupon = '';
-                couponFeedback.textContent = 'Kode kupon tidak valid.';
+                couponFeedback.textContent = error.message;
                 couponFeedback.classList.add('text-red-500');
                 couponFeedback.classList.remove('text-green-600');
+            } finally {
+                updateSummary();
+                applyCouponBtn.disabled = false;
+                applyCouponBtn.textContent = 'Terapkan';
             }
-            updateSummary();
         });
     </script>
 </body>
