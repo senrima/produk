@@ -260,6 +260,9 @@
         const discountEl = document.getElementById('discount-amount');
         const serviceFeeEl = document.getElementById('service-fee');
         const totalEl = document.getElementById('total-amount');
+        const transferLabel = document.querySelector('label[for="transfer"]');
+        const qrisLabel = document.querySelector('label[for="qris"]');
+        const paymentGatewayLabel = document.querySelector('label[for="paymentgateway"]');
 
         // --- Data ---
         const API_URL = 'https://api.senrima.web.id'; // Ganti dengan URL Web App Anda
@@ -271,22 +274,33 @@
             const subtotal = orderData.hargaProduk;
             const discount = orderData.diskon;
             
-            // --- LOGIKA BARU UNTUK BIAYA LAYANAN ---
             if (discount >= subtotal) {
-                orderData.biayaLayanan = 0; // Jadikan biaya layanan 0 jika gratis
+                orderData.biayaLayanan = 0;
             } else {
                 orderData.biayaLayanan = parseFloat(serviceFeeEl.getAttribute('data-fee')) || 5000;
             }
-            // --- AKHIR LOGIKA BARU ---
 
             const serviceFee = orderData.biayaLayanan;
             const total = subtotal - discount + serviceFee;
-            orderData.totalPembayaran = total < 0 ? 0 : total; // Pastikan total tidak minus
+            orderData.totalPembayaran = total < 0 ? 0 : total;
 
             subtotalEl.textContent = formatCurrency(subtotal);
             discountEl.textContent = `- ${formatCurrency(discount)}`;
             serviceFeeEl.textContent = formatCurrency(serviceFee);
             totalEl.textContent = formatCurrency(orderData.totalPembayaran);
+
+            // --- LOGIKA BARU UNTUK MENYESUAIKAN METODE PEMBAYARAN ---
+            if (orderData.totalPembayaran <= 0) {
+                qrisLabel.classList.add('hidden');
+                paymentGatewayLabel.classList.add('hidden');
+                document.getElementById('transfer').checked = true;
+                orderData.metodePembayaran = 'transfer';
+                payNowBtn.textContent = 'Klaim & Selesaikan';
+            } else {
+                qrisLabel.classList.remove('hidden');
+                paymentGatewayLabel.classList.remove('hidden');
+                payNowBtn.textContent = 'Bayar Sekarang';
+            }
         };
 
         const fetchProductData = async (productId) => {
