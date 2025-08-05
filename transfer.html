@@ -31,7 +31,7 @@
                     <img src="stools_logo.png" alt="S-Tools ID Logo" class="h-8 w-auto">
                     <span>S-Tools ID</span>
                 </a>
-                <a href="view.html" class="text-gray-600 hover:text-indigo-600 font-semibold">
+                <a href="View.html" class="text-gray-600 hover:text-indigo-600 font-semibold">
                     Kembali &rarr;
                 </a>
             </div>
@@ -69,26 +69,28 @@
                             <!-- Bank Details -->
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Bank Tujuan</p>
-                                <p class="text-xl font-bold text-gray-800">Bank Rakyat Indonesia (BRI)</p>
+                                <p class="text-xl font-bold text-gray-800">Bank Central Asia (BCA)</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Atas Nama</p>
-                                <p class="text-xl font-bold text-gray-800">Senrima Margasandy</p>
+                                <p class="text-xl font-bold text-gray-800">Senrima</p>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Nomor Rekening</p>
-                                <div class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
-                                    <span id="account-number" class="text-xl font-bold text-indigo-600 tracking-wider">005001157318509</span>
-                                    <button onclick="copyToClipboard('account-number')" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">Salin</button>
+                                <!-- Tata Letak Responsif untuk Mobile -->
+                                <div class="flex flex-wrap items-center justify-between gap-2 bg-gray-100 p-3 rounded-lg">
+                                    <span id="account-number" class="text-lg sm:text-xl font-bold text-indigo-600 tracking-wider">8020 123 456</span>
+                                    <button onclick="copyToClipboard('account-number')" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 px-3 py-1">Salin</button>
                                 </div>
                             </div>
 
                             <!-- Nominal Transfer -->
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Nominal Transfer</p>
-                                 <div class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
-                                    <span id="transfer-amount" class="text-xl font-bold text-indigo-600 tracking-wider">Rp 0</span>
-                                    <button onclick="copyToClipboard('transfer-amount')" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">Salin</button>
+                                <!-- Tata Letak Responsif untuk Mobile -->
+                                 <div class="flex flex-wrap items-center justify-between gap-2 bg-gray-100 p-3 rounded-lg">
+                                    <span id="transfer-amount" class="text-lg sm:text-xl font-bold text-indigo-600 tracking-wider">Rp 0</span>
+                                    <button onclick="copyToClipboard('transfer-amount')" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 px-3 py-1">Salin</button>
                                 </div>
                                 <p class="text-xs text-gray-500 mt-1">
                                     Penting: Mohon transfer dengan <b>3 digit terakhir</b>. Angka unik ini akan menambah <b>1 Koin S-Tools</b> ke akun Anda setelah pembayaran diverifikasi.
@@ -170,7 +172,7 @@
             document.getElementById('transfer-amount').textContent = 'Rp ' + data.nominalUnik.toLocaleString('id-ID');
             
             const whatsappMessage = `Halo, saya sudah melakukan pembayaran untuk invoice ${data.nomorInvoice} sebesar Rp ${data.nominalUnik.toLocaleString('id-ID')}. Mohon dicek.`;
-            document.getElementById('whatsapp-link').href = `https://wa.me/6285299678763?text=${encodeURIComponent(whatsappMessage)}`;
+            document.getElementById('whatsapp-link').href = `https://wa.me/6281234567890?text=${encodeURIComponent(whatsappMessage)}`;
         }
 
         function showError(message) {
@@ -204,6 +206,3 @@
     </script>
 </body>
 </html>
-
-
-
