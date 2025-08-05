@@ -16,7 +16,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #F9FAFB; /* Light Gray background */
+            background-color: #F9FAFB; /* Light Gray */
             color: #1F2937;
         }
         /* Style for disabled fieldset */
@@ -44,7 +44,7 @@
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="/#tentang" class="text-gray-600 hover:text-indigo-600 transition-colors">Tentang</a>
                     <a href="/#layanan" class="text-gray-600 hover:text-indigo-600 transition-colors">Layanan</a>
-                    <a href="index.html" class="text-gray-600 hover:text-indigo-600 transition-colors">Produk</a>
+                    <a href="view.html" class="text-gray-600 hover:text-indigo-600 transition-colors">Produk</a>
                     <a href="/#kontak" class="text-gray-600 hover:text-indigo-600 transition-colors">Kontak</a>
                     <a href="https://s-tools.id/app/" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all transform hover:scale-105">
                         Akses
@@ -63,7 +63,7 @@
             <div id="mobile-menu" class="hidden md:hidden mt-4">
                 <a href="/#tentang" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Tentang</a>
                 <a href="/#layanan" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Layanan</a>
-                <a href="index.html" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Produk</a>
+                <a href="view.html" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Produk</a>
                 <a href="/#kontak" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Kontak</a>
                 <a href="https://s-tools.id/app/" class="block text-center mt-4 bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 w-full">
                     Akses
@@ -89,21 +89,19 @@
                         
                         <!-- Loading Skeleton -->
                         <div id="summary-loading" class="animate-pulse">
-                            <div class="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-                            <div class="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
-                            <div class="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
-                            <div class="h-8 bg-gray-300 rounded w-1/3 ml-auto"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/3 mb-4 mx-auto"></div>
+                            <div class="h-6 bg-gray-300 rounded w-3/4 mb-2 mx-auto"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2 mb-6 mx-auto"></div>
+                            <div class="h-8 bg-gray-300 rounded w-1/3 mx-auto mt-4"></div>
                         </div>
 
                         <!-- Item Produk (Hidden by default) -->
                         <div id="summary-content" class="hidden">
-                            <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <p id="product-id" class="text-sm text-gray-500 font-medium"></p>
-                                    <h3 id="product-name" class="font-semibold text-gray-800 text-lg leading-tight my-1"></h3>
-                                    <p id="product-category" class="text-gray-600"></p>
-                                </div>
-                                <p class="font-semibold text-gray-800 text-lg text-right" id="product-price" data-price="0"></p>
+                            <div class="text-center mb-6">
+                                <p id="product-id" class="text-sm text-gray-500 font-medium"></p>
+                                <h3 id="product-name" class="font-semibold text-gray-800 text-lg leading-tight my-1"></h3>
+                                <p id="product-category" class="text-gray-600"></p>
+                                <p class="font-semibold text-gray-800 text-lg mt-4 pt-4 border-t border-gray-200" id="product-price" data-price="0"></p>
                             </div>
                         </div>
 
@@ -184,13 +182,22 @@
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Metode Pembayaran</label>
                                             <div class="space-y-3">
-                                                <label for="qris" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
-                                                    <input type="radio" id="qris" name="payment_method" value="qris" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                                                <!-- Transfer Bank (Default) -->
+                                                <label for="transfer" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
+                                                    <input type="radio" id="transfer" name="payment_method" value="transfer" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                                                    <span class="ml-3 font-medium text-gray-800">Transfer Bank</span>
+                                                </label>
+
+                                                <!-- QRIS (Disabled) -->
+                                                <label for="qris" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-not-allowed opacity-50">
+                                                    <input type="radio" id="qris" name="payment_method" value="qris" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" disabled>
                                                     <span class="ml-3 font-medium text-gray-800">QRIS</span>
                                                 </label>
-                                                <label for="midtrans" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
-                                                    <input type="radio" id="midtrans" name="payment_method" value="midtrans" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                                                    <span class="ml-3 font-medium text-gray-800">Midtrans (Virtual Account, Bank Transfer, dll)</span>
+
+                                                <!-- Payment Gateway (Disabled) -->
+                                                <label for="paymentgateway" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-not-allowed opacity-50">
+                                                    <input type="radio" id="paymentgateway" name="payment_method" value="paymentgateway" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" disabled>
+                                                    <span class="ml-3 font-medium text-gray-800">Payment Gateway</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -228,7 +235,7 @@
             totalPembayaran: 0,
             namaPembeli: '',
             emailPembeli: '',
-            metodePembayaran: 'qris'
+            metodePembayaran: 'transfer' // Default diubah ke transfer
         };
 
         // --- Setup Element ---
