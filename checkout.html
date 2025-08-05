@@ -270,14 +270,23 @@
         const updateSummary = () => {
             const subtotal = orderData.hargaProduk;
             const discount = orderData.diskon;
+            
+            // --- LOGIKA BARU UNTUK BIAYA LAYANAN ---
+            if (discount >= subtotal) {
+                orderData.biayaLayanan = 0; // Jadikan biaya layanan 0 jika gratis
+            } else {
+                orderData.biayaLayanan = parseFloat(serviceFeeEl.getAttribute('data-fee')) || 5000;
+            }
+            // --- AKHIR LOGIKA BARU ---
+
             const serviceFee = orderData.biayaLayanan;
             const total = subtotal - discount + serviceFee;
-            orderData.totalPembayaran = total;
+            orderData.totalPembayaran = total < 0 ? 0 : total; // Pastikan total tidak minus
 
             subtotalEl.textContent = formatCurrency(subtotal);
             discountEl.textContent = `- ${formatCurrency(discount)}`;
             serviceFeeEl.textContent = formatCurrency(serviceFee);
-            totalEl.textContent = formatCurrency(total);
+            totalEl.textContent = formatCurrency(orderData.totalPembayaran);
         };
 
         const fetchProductData = async (productId) => {
