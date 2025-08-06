@@ -44,7 +44,7 @@
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="/#tentang" class="text-gray-600 hover:text-indigo-600 transition-colors">Tentang</a>
                     <a href="/#layanan" class="text-gray-600 hover:text-indigo-600 transition-colors">Layanan</a>
-                    <a href="view.html" class="text-gray-600 hover:text-indigo-600 transition-colors">Produk</a>
+                    <a href="View.html" class="text-gray-600 hover:text-indigo-600 transition-colors">Produk</a>
                     <a href="/#kontak" class="text-gray-600 hover:text-indigo-600 transition-colors">Kontak</a>
                     <a href="https://s-tools.id/app/" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all transform hover:scale-105">
                         Akses
@@ -63,7 +63,7 @@
             <div id="mobile-menu" class="hidden md:hidden mt-4">
                 <a href="/#tentang" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Tentang</a>
                 <a href="/#layanan" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Layanan</a>
-                <a href="view.html" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Produk</a>
+                <a href="View.html" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Produk</a>
                 <a href="/#kontak" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Kontak</a>
                 <a href="https://s-tools.id/app/" class="block text-center mt-4 bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 w-full">
                     Akses
@@ -216,8 +216,8 @@
     </footer>
 
     <script>
-        // --- Objek Global untuk Data Pesanan (DIPERBAIKI) ---
-        let orderData = {
+        // --- Objek Global untuk Data Pesanan ---
+        var orderData = {
             idProduk: null,
             namaProduk: null,
             kategori: null,
@@ -231,39 +231,38 @@
             metodePembayaran: 'transfer'
         };
 
-        // --- Setup Element (DIPERBAIKI) ---
-        // Menggunakan 'let' untuk variabel yang akan di-reassign
-        let menuBtn = document.getElementById('menu-btn');
-        let mobileMenu = document.getElementById('mobile-menu');
-        let pageStatus = document.getElementById('page-status');
-        let statusMessage = document.getElementById('status-message');
-        let pageSubtitle = document.getElementById('page-subtitle');
-        let checkoutContent = document.getElementById('checkout-content');
-        let userDetailsStep = document.getElementById('user-details-step');
-        let tokenVerificationStep = document.getElementById('token-verification-step');
-        let verificationSuccessMessage = document.getElementById('verification-success-message');
-        let paymentMethodStep = document.getElementById('payment-method-step');
-        let fullNameInput = document.getElementById('full_name');
-        let emailInput = document.getElementById('email');
-        let sendTokenBtn = document.getElementById('send-token-btn');
-        let tokenInput = document.getElementById('token');
-        let verifyTokenBtn = document.getElementById('verify-token-btn');
-        let tokenFeedback = document.getElementById('token-feedback');
-        let payNowBtn = document.getElementById('pay-now-btn');
-        let applyCouponBtn = document.getElementById('apply-coupon-btn');
-        let couponCodeInput = document.getElementById('coupon_code');
-        let couponFeedback = document.getElementById('coupon-feedback');
-        let productIdEl = document.getElementById('product-id');
-        let productNameEl = document.getElementById('product-name');
-        let productCategoryEl = document.getElementById('product-category');
-        let productPriceEl = document.getElementById('product-price');
-        let subtotalEl = document.getElementById('subtotal-amount');
-        let discountEl = document.getElementById('discount-amount');
-        let serviceFeeEl = document.getElementById('service-fee');
-        let totalEl = document.getElementById('total-amount');
-        let transferLabel = document.querySelector('label[for="transfer"]');
-        let qrisLabel = document.querySelector('label[for="qris"]');
-        let paymentGatewayLabel = document.querySelector('label[for="paymentgateway"]');
+        // --- Setup Element ---
+        var menuBtn = document.getElementById('menu-btn');
+        var mobileMenu = document.getElementById('mobile-menu');
+        var pageStatus = document.getElementById('page-status');
+        var statusMessage = document.getElementById('status-message');
+        var pageSubtitle = document.getElementById('page-subtitle');
+        var checkoutContent = document.getElementById('checkout-content');
+        var userDetailsStep = document.getElementById('user-details-step');
+        var tokenVerificationStep = document.getElementById('token-verification-step');
+        var verificationSuccessMessage = document.getElementById('verification-success-message');
+        var paymentMethodStep = document.getElementById('payment-method-step');
+        var fullNameInput = document.getElementById('full_name');
+        var emailInput = document.getElementById('email');
+        var sendTokenBtn = document.getElementById('send-token-btn');
+        var tokenInput = document.getElementById('token');
+        var verifyTokenBtn = document.getElementById('verify-token-btn');
+        var tokenFeedback = document.getElementById('token-feedback');
+        var payNowBtn = document.getElementById('pay-now-btn');
+        var applyCouponBtn = document.getElementById('apply-coupon-btn');
+        var couponCodeInput = document.getElementById('coupon_code');
+        var couponFeedback = document.getElementById('coupon-feedback');
+        var productIdEl = document.getElementById('product-id');
+        var productNameEl = document.getElementById('product-name');
+        var productCategoryEl = document.getElementById('product-category');
+        var productPriceEl = document.getElementById('product-price');
+        var subtotalEl = document.getElementById('subtotal-amount');
+        var discountEl = document.getElementById('discount-amount');
+        var serviceFeeEl = document.getElementById('service-fee');
+        var totalEl = document.getElementById('total-amount');
+        var transferLabel = document.querySelector('label[for="transfer"]');
+        var qrisLabel = document.querySelector('label[for="qris"]');
+        var paymentGatewayLabel = document.querySelector('label[for="paymentgateway"]');
 
         // --- Data ---
         const API_URL = 'https://api.senrima.web.id'; // Ganti dengan URL Web App Anda
