@@ -44,7 +44,7 @@
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="/#tentang" class="text-gray-600 hover:text-indigo-600 transition-colors">Tentang</a>
                     <a href="/#layanan" class="text-gray-600 hover:text-indigo-600 transition-colors">Layanan</a>
-                    <a href="View.html" class="text-gray-600 hover:text-indigo-600 transition-colors">Produk</a>
+                    <a href="view.html" class="text-gray-600 hover:text-indigo-600 transition-colors">Produk</a>
                     <a href="/#kontak" class="text-gray-600 hover:text-indigo-600 transition-colors">Kontak</a>
                     <a href="https://s-tools.id/app/" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all transform hover:scale-105">
                         Akses
@@ -63,7 +63,7 @@
             <div id="mobile-menu" class="hidden md:hidden mt-4">
                 <a href="/#tentang" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Tentang</a>
                 <a href="/#layanan" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Layanan</a>
-                <a href="View.html" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Produk</a>
+                <a href="view.html" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Produk</a>
                 <a href="/#kontak" class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg">Kontak</a>
                 <a href="https://s-tools.id/app/" class="block text-center mt-4 bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 w-full">
                     Akses
@@ -271,8 +271,8 @@
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         
         const updateSummary = () => {
-            const subtotal = orderData.hargaProduk;
-            const discount = orderData.diskon;
+            var subtotal = orderData.hargaProduk;
+            var discount = orderData.diskon;
             
             if (discount >= subtotal) {
                 orderData.biayaLayanan = 0;
@@ -280,8 +280,8 @@
                 orderData.biayaLayanan = parseFloat(serviceFeeEl.getAttribute('data-fee')) || 5000;
             }
 
-            const serviceFee = orderData.biayaLayanan;
-            const total = subtotal - discount + serviceFee;
+            var serviceFee = orderData.biayaLayanan;
+            var total = subtotal - discount + serviceFee;
             orderData.totalPembayaran = total < 0 ? 0 : total;
 
             subtotalEl.textContent = formatCurrency(subtotal);
@@ -303,18 +303,18 @@
         };
 
         const fetchProductData = async (productId) => {
-            const payload = {
+            var payload = {
                 kontrol: 'proteksi',
                 action: 'dataproduk',
                 idproduk: productId
             };
             try {
-                const response = await fetch(API_URL, {
+                var response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
-                const result = await response.json();
+                var result = await response.json();
                 if (response.ok && result.status === 'sukses') {
                     orderData.idProduk = productId;
                     orderData.namaProduk = result.data.namaproduk;
@@ -361,19 +361,19 @@
             orderData.emailPembeli = emailInput.value;
             orderData.metodePembayaran = document.querySelector('input[name="payment_method"]:checked').value;
 
-            const payload = {
+            var payload = {
                 kontrol: 'proteksi',
                 action: 'buatinvoice',
                 data: orderData
             };
 
             try {
-                const response = await fetch(API_URL, {
+                var response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
-                const result = await response.json();
+                var result = await response.json();
 
                 if (response.ok && result.status === 'sukses' && result.paymentLink) {
                     window.location.href = result.paymentLink;
@@ -392,8 +392,8 @@
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productIdFromUrl = urlParams.get('productid');
+            var urlParams = new URLSearchParams(window.location.search);
+            var productIdFromUrl = urlParams.get('productid');
             
             if (productIdFromUrl) {
                 fetchProductData(productIdFromUrl);
@@ -419,7 +419,7 @@
                 Mengirim...
             `;
             
-            const payload = {
+            var payload = {
                 kontrol: 'proteksi',
                 action: 'kirimotpbayar',
                 email: emailInput.value,
@@ -427,12 +427,12 @@
             };
 
             try {
-                const response = await fetch(API_URL, {
+                var response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
-                const result = await response.json();
+                var result = await response.json();
                 if (response.ok && result.status === 'sukses') {
                     userDetailsStep.disabled = true; 
                     sendTokenBtn.classList.add('hidden'); 
@@ -461,7 +461,7 @@
             verifyTokenBtn.disabled = true;
             verifyTokenBtn.innerHTML = 'Memverifikasi...';
 
-            const payload = {
+            var payload = {
                 kontrol: 'proteksi',
                 action: 'cekotpbayar',
                 email: emailInput.value,
@@ -469,12 +469,12 @@
             };
             
             try {
-                const response = await fetch(API_URL, {
+                var response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
-                const result = await response.json();
+                var result = await response.json();
                 if (response.ok && result.status === 'sukses') {
                     tokenVerificationStep.classList.add('hidden'); 
                     verificationSuccessMessage.classList.remove('hidden'); 
@@ -496,7 +496,7 @@
         });
 
         applyCouponBtn.addEventListener('click', async () => {
-            const code = couponCodeInput.value.trim();
+            var code = couponCodeInput.value.trim();
             if (!code) {
                 alert('Silakan masukkan kode kupon.');
                 return;
@@ -506,22 +506,22 @@
             applyCouponBtn.textContent = '...';
             couponFeedback.textContent = '';
 
-            const payload = {
+            var payload = {
                 kontrol: 'proteksi',
                 action: 'cekkupon',
                 kodeKupon: code
             };
 
             try {
-                const response = await fetch(API_URL, {
+                var response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
-                const result = await response.json();
+                var result = await response.json();
 
                 if (response.ok && result.status === 'sukses') {
-                    const coupon = result.data;
+                    var coupon = result.data;
                     orderData.diskon = (coupon.tipe === 'fixed') ? parseFloat(coupon.nilai) : orderData.hargaProduk * parseFloat(coupon.nilai);
                     orderData.kodeKupon = code;
                     couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
