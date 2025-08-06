@@ -47,6 +47,15 @@
             from { transform: rotate(0deg); } 
             to { transform: rotate(360deg); } 
         }
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="relative">
@@ -98,7 +107,7 @@
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
                     Setiap produk dari S-Tools ID dirancang untuk memberikan Anda keunggulan. Jelajahi alat-alat yang akan mendefinisikan ulang cara Anda bekerja.
                 </p>
-                <a href="View.html" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-500/30">
+                <a href="view.html" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-500/30">
                     Jelajahi Produk
                 </a>
             </div>
@@ -120,7 +129,37 @@
             </div>
         </section>
         
-        <!-- ... (Sisa bagian HTML seperti FAQ dan CTA tetap sama) ... -->
+        <!-- FAQ Section (DIKEMBALIKAN) -->
+        <section class="py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-4xl reveal">
+                <h2 class="text-center text-3xl font-bold text-gray-900 mb-12">Pertanyaan yang Sering Muncul</h2>
+                <div class="space-y-8">
+                    <div class="border-b border-gray-200 pb-4">
+                        <h3 class="font-semibold text-lg text-gray-800">Bagaimana saya menerima produk setelah pembelian?</h3>
+                        <p class="text-gray-600 mt-2">Setelah pembayaran berhasil, Anda akan langsung menerima email berisi link unduhan atau akses ke platform, tergantung produk yang Anda beli.</p>
+                    </div>
+                    <div class="border-b border-gray-200 pb-4">
+                        <h3 class="font-semibold text-lg text-gray-800">Apakah ada dukungan teknis?</h3>
+                        <p class="text-gray-600 mt-2">Tentu. Semua produk pembelian satu kali mendapatkan dukungan via email selama 30 hari. Produk langganan mendapatkan dukungan prioritas selama masa langganan aktif.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-800">Bisakah saya mendapatkan refund?</h3>
+                        <p class="text-gray-600 mt-2">Karena sifat produk digital, kami tidak menawarkan pengembalian dana. Namun, jika Anda mengalami masalah teknis yang tidak bisa kami selesaikan, kami akan meninjau kasus Anda secara individual.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA (DIKEMBALIKAN) -->
+        <section class="py-24 text-center bg-gray-50">
+            <div class="container mx-auto px-6 reveal">
+                <h2 class="text-4xl font-extrabold text-gray-900">Siap Meningkatkan Produktivitas Anda?</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto mt-4 mb-8">Jangan hanya bekerja keras, bekerjalah dengan cerdas. Pilih alat yang tepat dari S-Tools ID dan biarkan inovasi bekerja untuk Anda.</p>
+                <a href="view.html" class="bg-gradient-to-r from-indigo-600 to-blue-500 hover:opacity-90 text-white font-bold py-4 px-10 rounded-full text-xl transition-all transform hover:scale-105 inline-block shadow-lg shadow-blue-500/30">
+                    Jelajahi Semua Produk
+                </a>
+            </div>
+        </section>
 
     </main>
 
@@ -133,7 +172,10 @@
     
     <!-- Video Modal -->
     <div id="video-modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <!-- ... (Kode modal tetap sama) ... -->
+        <div id="video-modal-content" class="bg-white w-full max-w-4xl aspect-video rounded-lg shadow-xl relative">
+            <button id="close-modal" class="absolute -top-3 -right-3 text-white bg-red-600 rounded-full h-8 w-8 flex items-center justify-center z-10">&times;</button>
+            <iframe id="video-iframe" class="w-full h-full rounded-lg" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
     </div>
 
     <script>
@@ -183,7 +225,7 @@
                 <div>
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-2xl font-bold text-gray-900">${categoryTitle} Unggulan</h3>
-                        <a href="View.html" class="inline-block bg-white text-indigo-600 font-semibold py-2 px-5 rounded-lg border border-gray-300 hover:bg-indigo-50 transition-colors text-sm">Lihat Semua</a>
+                        <a href="view.html" class="inline-block bg-white text-indigo-600 font-semibold py-2 px-5 rounded-lg border border-gray-300 hover:bg-indigo-50 transition-colors text-sm">Lihat Semua</a>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         ${productCardsHTML}
@@ -223,7 +265,62 @@
         }
 
         function reinitializeEventListeners() {
-            // ... (Fungsi ini tetap sama, untuk mengaktifkan menu mobile dan modal video)
+            // Logika untuk Menu Mobile
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if(menuBtn && mobileMenu) {
+                 menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Logika Video Modal (Popup)
+            const openModalButtons = document.querySelectorAll('.open-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const modalOverlay = document.getElementById('video-modal-overlay');
+            const videoIframe = document.getElementById('video-iframe');
+
+            const openModal = (videoId) => {
+                videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                modalOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => { modalOverlay.style.opacity = '1'; }, 10);
+            };
+
+            const closeModal = () => {
+                modalOverlay.style.opacity = '0';
+                document.body.style.overflow = 'auto';
+                setTimeout(() => {
+                    modalOverlay.classList.add('hidden');
+                    videoIframe.src = '';
+                }, 300);
+            };
+
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const videoId = button.getAttribute('data-video-id');
+                    openModal(videoId);
+                });
+            });
+
+            if(closeModalButton) closeModalButton.addEventListener('click', closeModal);
+            if(modalOverlay) modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) closeModal();
+            });
+            
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !modalOverlay.classList.contains('hidden')) closeModal();
+            });
+            
+            // Animasi on-scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }
 
         document.addEventListener('DOMContentLoaded', fetchAndRenderFeaturedProducts);
