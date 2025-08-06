@@ -260,7 +260,7 @@
         var discountEl = document.getElementById('discount-amount');
         var serviceFeeEl = document.getElementById('service-fee');
         var totalEl = document.getElementById('total-amount');
-        var transferLabel = document.querySelector('label[for="transfer"]');
+        var transferRadio = document.getElementById('transfer');
         var qrisLabel = document.querySelector('label[for="qris"]');
         var paymentGatewayLabel = document.querySelector('label[for="paymentgateway"]');
 
@@ -289,10 +289,11 @@
             serviceFeeEl.textContent = formatCurrency(serviceFee);
             totalEl.textContent = formatCurrency(orderData.totalPembayaran);
 
+            // --- LOGIKA BARU UNTUK MENYESUAIKAN METODE PEMBAYARAN ---
             if (orderData.totalPembayaran <= 0) {
                 qrisLabel.classList.add('hidden');
                 paymentGatewayLabel.classList.add('hidden');
-                document.getElementById('transfer').checked = true;
+                transferRadio.checked = true;
                 orderData.metodePembayaran = 'transfer';
                 payNowBtn.textContent = 'Klaim & Selesaikan';
             } else {
