@@ -291,10 +291,14 @@
 
             // --- LOGIKA BARU UNTUK MENYESUAIKAN METODE PEMBAYARAN ---
             if (orderData.totalPembayaran <= 0) {
+                qrisLabel.classList.add('hidden');
+                paymentGatewayLabel.classList.add('hidden');
                 transferRadio.checked = true;
                 orderData.metodePembayaran = 'transfer';
                 payNowBtn.textContent = 'Klaim & Selesaikan';
             } else {
+                qrisLabel.classList.remove('hidden');
+                paymentGatewayLabel.classList.remove('hidden');
                 payNowBtn.textContent = 'Bayar Sekarang';
             }
         };
@@ -542,4 +546,5 @@
     </script>
 </body>
 </html>
+
 
