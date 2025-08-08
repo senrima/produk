@@ -25,7 +25,7 @@
                 background-color: #FFFFFF;
             }
             .no-print {
-                display: none;
+                display: none !important; /* PENTING: Menggunakan !important untuk memastikan elemen disembunyikan */
             }
             .print-only {
                 display: block !important;
@@ -35,6 +35,15 @@
                 border: none;
                 margin: 0;
                 padding: 0;
+            }
+            /* Menambahkan footer halaman saat print */
+            .page-footer {
+                position: fixed;
+                bottom: 20px; /* Memberi sedikit jarak dari bawah */
+                width: 100%;
+                text-align: center;
+                font-size: 10px;
+                color: #6b7280;
             }
         }
     </style>
@@ -186,6 +195,11 @@
             </footer>
 
         </div>
+        
+        <!-- Page Footer for Printing -->
+        <div class="hidden print-only page-footer">
+            Halaman 1
+        </div>
     </div>
 
     <script>
@@ -277,7 +291,7 @@
             }
         }
 
-        // --- FUNGSI BARU UNTUK PRINT ---
+        // --- FUNGSI PRINT DIPERBARUI ---
         function handlePrint() {
             const now = new Date();
             const printTimestamp = `Dicetak pada: ${now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} - ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WITA`;
