@@ -27,6 +27,9 @@
             .no-print {
                 display: none;
             }
+            .print-only {
+                display: block !important;
+            }
             .invoice-container {
                 box-shadow: none;
                 border: none;
@@ -43,7 +46,7 @@
         <a href="javascript:history.back()" class="text-gray-600 hover:text-indigo-600 font-semibold">
             &larr; Kembali
         </a>
-        <button onclick="window.print()" class="bg-indigo-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors">
+        <button onclick="handlePrint()" class="bg-indigo-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors">
             Cetak / Simpan PDF
         </button>
     </div>
@@ -79,11 +82,15 @@
         <!-- Konten Invoice (disembunyikan sampai data berhasil dimuat) -->
         <div id="invoice-content" class="hidden invoice-container bg-white p-8 md:p-12 rounded-2xl border border-gray-200 shadow-lg max-w-4xl mx-auto">
             
+            <!-- Print Timestamp (Hanya tampil saat print) -->
+            <div id="print-timestamp" class="hidden print-only text-right text-xs text-gray-500 mb-4"></div>
+
             <header class="flex justify-between items-start mb-10">
                 <div>
-                    <img src="stools_logo.png" alt="S-Tools ID Logo" class="h-10 w-auto mb-2">
+                    <img src="https://s-tools.id/aset/stools_logo.png" alt="S-Tools ID Logo" class="h-10 w-auto mb-2">
                     <h1 class="text-2xl font-bold text-gray-900">S-Tools ID</h1>
                     <p class="text-gray-500">Raihan Sweet Home B13, Maros, Indonesia</p>
+                    <p class="text-gray-500">+62 851-7507-8763</p>
                 </div>
                 <div class="text-right">
                     <h2 class="text-3xl font-bold text-gray-800">INVOICE</h2>
@@ -219,7 +226,6 @@
 
             document.getElementById('subtotal-inv').textContent = formatCurrency(data.HargaProduk);
             
-            // Logika untuk menampilkan diskon dan kode kupon
             if (data.Diskon && data.Diskon > 0) {
                 const discountRow = document.getElementById('discount-row');
                 const couponCodeSpan = document.getElementById('coupon-code-span');
@@ -271,9 +277,17 @@
             }
         }
 
+        // --- FUNGSI BARU UNTUK PRINT ---
+        function handlePrint() {
+            const now = new Date();
+            const printTimestamp = `Dicetak pada: ${now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} - ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WITA`;
+            
+            document.getElementById('print-timestamp').textContent = printTimestamp;
+            
+            window.print();
+        }
+
         document.addEventListener('DOMContentLoaded', fetchInvoiceDetails);
     </script>
 </body>
 </html>
-
-
