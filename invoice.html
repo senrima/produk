@@ -50,7 +50,15 @@
 
     <!-- Kontainer Invoice -->
     <div class="container mx-auto p-6 md:p-10 my-6">
-        <div id="invoice-content" class="invoice-container bg-white p-8 md:p-12 rounded-2xl border border-gray-200 shadow-lg max-w-4xl mx-auto">
+
+        <!-- Pesan Error (disembunyikan secara default) -->
+        <div id="error-container" class="hidden max-w-4xl mx-auto text-center bg-red-100 text-red-700 p-8 rounded-2xl border border-red-200">
+            <h2 class="text-2xl font-bold mb-2">Invoice Tidak Ditemukan</h2>
+            <p id="error-message">Maaf, kami tidak dapat menemukan detail untuk nomor invoice ini. Pastikan link yang Anda gunakan sudah benar.</p>
+        </div>
+
+        <!-- Konten Invoice (disembunyikan sampai data berhasil dimuat) -->
+        <div id="invoice-content" class="hidden invoice-container bg-white p-8 md:p-12 rounded-2xl border border-gray-200 shadow-lg max-w-4xl mx-auto">
             
             <!-- Header Invoice -->
             <header class="flex justify-between items-start mb-10">
@@ -61,7 +69,7 @@
                 </div>
                 <div class="text-right">
                     <h2 class="text-3xl font-bold text-gray-800">INVOICE</h2>
-                    <p class="text-gray-500 mt-1">#INV-2025-08-00123</p>
+                    <p id="invoice-number" class="text-gray-500 mt-1"></p>
                 </div>
             </header>
 
@@ -69,13 +77,13 @@
             <section class="grid grid-cols-2 gap-8 mb-10">
                 <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Ditagihkan Kepada</h3>
-                    <p id="customer-name" class="font-bold text-gray-800">Senrima</p>
-                    <p id="customer-email" class="text-gray-600">me@mail.s-tools.id</p>
+                    <p id="customer-name" class="font-bold text-gray-800"></p>
+                    <p id="customer-email" class="text-gray-600"></p>
                 </div>
                 <div class="text-right">
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Detail Transaksi</h3>
-                    <p class="text-gray-800"><span class="font-semibold">Tanggal Terbit:</span> 30 Juli 2025</p>
-                    <p class="text-gray-800"><span class="font-semibold">Status:</span> <span class="bg-green-100 text-green-700 font-bold py-1 px-3 rounded-full text-sm">LUNAS</span></p>
+                    <p id="invoice-date" class="text-gray-800"></p>
+                    <p id="invoice-status-container" class="text-gray-800"></p>
                 </div>
             </section>
 
@@ -91,10 +99,10 @@
                     <tbody>
                         <tr class="border-b border-gray-100">
                             <td class="p-4">
-                                <p id="product-name-inv" class="font-semibold text-gray-800">Nebula - AI Automation Mastery</p>
-                                <p id="product-id-inv" class="text-sm text-gray-500">ID Produk: SP101</p>
+                                <p id="product-name-inv" class="font-semibold text-gray-800"></p>
+                                <p id="product-id-inv" class="text-sm text-gray-500"></p>
                             </td>
-                            <td id="product-price-inv" class="p-4 text-right font-medium text-gray-800">Rp 2.200.000</td>
+                            <td id="product-price-inv" class="p-4 text-right font-medium text-gray-800"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -105,25 +113,25 @@
                 <div class="w-full max-w-sm space-y-4">
                     <div class="flex justify-between text-gray-600">
                         <span>Subtotal</span>
-                        <span id="subtotal-inv">Rp 2.200.000</span>
+                        <span id="subtotal-inv"></span>
                     </div>
                     <div class="flex justify-between text-gray-600">
-                        <span>Diskon (HEMAT50)</span>
-                        <span id="discount-inv">- Rp 50.000</span>
+                        <span>Diskon</span>
+                        <span id="discount-inv"></span>
                     </div>
                     <div class="flex justify-between text-gray-600">
                         <span>Biaya Layanan</span>
-                        <span id="fee-inv">Rp 5.000</span>
+                        <span id="fee-inv"></span>
                     </div>
                     <div class="border-t border-gray-200 my-2"></div>
                     <div class="flex justify-between font-bold text-gray-900 text-xl">
                         <span>Total Dibayar</span>
-                        <span id="total-inv">Rp 2.155.000</span>
+                        <span id="total-inv"></span>
                     </div>
                 </div>
             </section>
 
-            <!-- Ketentuan Pembelian (DIPERBARUI) -->
+            <!-- Ketentuan Pembelian -->
             <section class="mt-10 pt-8 border-t border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Ketentuan Pembelian</h3>
                 <ul class="space-y-3 text-gray-600 text-sm list-disc list-inside">
@@ -134,7 +142,7 @@
                         <strong>Bonus:</strong> Semua bonus yang tertera pada halaman penjualan telah disertakan dan dapat diakses bersamaan dengan produk utama.
                     </li>
                     <li>
-                        <strong>Koin S-Tools:</strong> Anda akan menerima <strong class="text-green-600">1 Koin</strong> yang akan ditambahkan ke akun Anda setelah pembayaran ini diverifikasi. Koin dapat digunakan untuk mendapatkan diskon pada pembelian berikutnya.
+                        <strong>Koin S-Tools:</strong> Pembayaran Transfer Bank yang menggunakan kode unit Anda akan menerima <strong class="text-green-600">1 Koin</strong> yang akan ditambahkan ke akun Anda setelah pembayaran ini diverifikasi. Koin dapat digunakan untuk mendapatkan diskon pada pembelian berikutnya.
                     </li>
                     <li>
                         <strong>Dukungan:</strong> Anda berhak mendapatkan dukungan teknis terkait produk ini selama 30 hari melalui email <a href="mailto:me@mail.s-tools.id" class="text-indigo-600 hover:underline">me@mail.s-tools.id</a>.
@@ -158,7 +166,85 @@
     </div>
 
     <script>
-        // ... (JavaScript Anda tetap sama)
+        const API_URL = 'https://api.senrima.web.id'; // Ganti dengan URL Web App Anda
+
+        // Fungsi untuk format mata uang
+        const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+
+        // Fungsi untuk menampilkan error
+        function showError(message) {
+            const errorContainer = document.getElementById('error-container');
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorContainer.classList.remove('hidden');
+        }
+
+        // Fungsi untuk menampilkan detail invoice
+        function displayInvoiceDetails(data) {
+            document.getElementById('invoice-content').classList.remove('hidden');
+
+            document.getElementById('invoice-number').textContent = `#${data.NomorInvoice}`;
+            document.getElementById('customer-name').textContent = data.NamaPembeli;
+            document.getElementById('customer-email').textContent = data.EmailPembeli;
+            
+            const date = new Date(data.TanggalTerbit);
+            document.getElementById('invoice-date').innerHTML = `<span class="font-semibold">Tanggal Terbit:</span> ${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            
+            let statusBadge = '';
+            if (data.Status === 'SUCCESS') {
+                statusBadge = '<span class="bg-green-100 text-green-700 font-bold py-1 px-3 rounded-full text-sm">LUNAS</span>';
+            } else {
+                statusBadge = '<span class="bg-yellow-100 text-yellow-700 font-bold py-1 px-3 rounded-full text-sm">PENDING</span>';
+            }
+            document.getElementById('invoice-status-container').innerHTML = `<span class="font-semibold">Status:</span> ${statusBadge}`;
+
+            document.getElementById('product-name-inv').textContent = data.NamaProduk;
+            document.getElementById('product-id-inv').textContent = `ID Produk: ${data.IDProduk}`;
+            document.getElementById('product-price-inv').textContent = formatCurrency(data.HargaProduk);
+
+            document.getElementById('subtotal-inv').textContent = formatCurrency(data.HargaProduk);
+            document.getElementById('discount-inv').textContent = `- ${formatCurrency(data.Diskon)}`;
+            document.getElementById('fee-inv').textContent = formatCurrency(data.BiayaLayanan);
+            document.getElementById('total-inv').textContent = formatCurrency(data.TotalPembayaran);
+        }
+
+        // Fungsi utama untuk mengambil data saat halaman dimuat
+        async function fetchInvoiceDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const invoiceId = urlParams.get('invoice');
+
+            if (!invoiceId) {
+                showError("Nomor invoice tidak ditemukan di URL. Pastikan link yang Anda gunakan sudah benar.");
+                return;
+            }
+
+            const payload = {
+                kontrol: 'proteksi',
+                action: 'getinvoicedetails',
+                invoiceId: invoiceId
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (response.ok && result.status === 'sukses') {
+                    displayInvoiceDetails(result.data);
+                } else {
+                    throw new Error(result.message || 'Gagal mengambil data invoice.');
+                }
+            } catch (error) {
+                console.error("Gagal mengambil detail invoice:", error);
+                showError(error.message);
+            }
+        }
+
+        // Jalankan fungsi saat halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', fetchInvoiceDetails);
     </script>
 </body>
 </html>
