@@ -61,10 +61,11 @@ function removeFromCart(productId) {
  * Fungsi untuk memperbarui ikon keranjang di header.
  */
 function updateCartIcon() {
-    const cartCount = document.getElementById('cart-count');
-    if (cartCount) {
-        cartCount.textContent = getCart().length;
-    }
+    const cartCountDesktop = document.getElementById('cart-count-desktop');
+    const cartCountMobile = document.getElementById('cart-count-mobile');
+    const count = getCart().length;
+    if (cartCountDesktop) cartCountDesktop.textContent = count;
+    if (cartCountMobile) cartCountMobile.textContent = count;
 }
 
 /**
