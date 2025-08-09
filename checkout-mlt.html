@@ -159,7 +159,6 @@
 
     <script src="keranjang.js"></script>
     <script>
-        // --- Objek Global untuk Data Pesanan ---
         var orderData = {
             items: [],
             kodeKupon: '',
@@ -171,14 +170,7 @@
             metodePembayaran: 'transfer'
         };
 
-        // --- Setup Element ---
         var cartItemsSummary = document.getElementById('cart-items-summary');
-        var menuBtn = document.getElementById('menu-btn');
-        var mobileMenu = document.getElementById('mobile-menu');
-        var pageStatus = document.getElementById('page-status');
-        var statusMessage = document.getElementById('status-message');
-        var pageSubtitle = document.getElementById('page-subtitle');
-        var checkoutContent = document.getElementById('checkout-content');
         var userDetailsStep = document.getElementById('user-details-step');
         var tokenVerificationStep = document.getElementById('token-verification-step');
         var verificationSuccessMessage = document.getElementById('verification-success-message');
@@ -203,7 +195,6 @@
         
         const API_URL = 'https://api.senrima.web.id';
 
-        // --- Helper Functions ---
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         
         const updateSummary = () => {
@@ -241,7 +232,7 @@
         function renderCartSummary() {
             const cart = getCart();
             if (cart.length === 0) {
-                window.location.href = 'view.html'; // Arahkan jika keranjang kosong
+                window.location.href = 'view.html';
                 return;
             }
             
@@ -267,17 +258,11 @@
             updateSummary();
         }
 
-        const handleFinalPayment = async (event) => {
+        async function handleFinalPayment(event) {
             event.preventDefault();
             
             payNowBtn.disabled = true;
-            payNowBtn.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Memproses...
-            `;
+            payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...`;
 
             orderData.namaPembeli = fullNameInput.value;
             orderData.emailPembeli = emailInput.value;
@@ -312,12 +297,8 @@
             }
         };
 
-        // --- Event Listeners ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCartSummary();
-        });
-
-        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        // --- Event Listeners (DITAMBAHKAN KEMBALI) ---
+        document.addEventListener('DOMContentLoaded', renderCartSummary);
 
         sendTokenBtn.addEventListener('click', async () => {
             if (fullNameInput.value.trim() === '' || emailInput.value.trim() === '') {
@@ -326,13 +307,7 @@
             }
 
             sendTokenBtn.disabled = true;
-            sendTokenBtn.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Mengirim...
-            `;
+            sendTokenBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Mengirim...`;
             
             var payload = {
                 kontrol: 'proteksi',
