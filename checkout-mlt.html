@@ -161,7 +161,7 @@
     <script>
         // --- Objek Global untuk Data Pesanan ---
         var orderData = {
-            items: [], // Sekarang menjadi array
+            items: [],
             kodeKupon: '',
             diskon: 0,
             biayaLayanan: 5000,
@@ -173,7 +173,35 @@
 
         // --- Setup Element ---
         var cartItemsSummary = document.getElementById('cart-items-summary');
-        // ... (semua variabel elemen lain tetap sama)
+        var menuBtn = document.getElementById('menu-btn');
+        var mobileMenu = document.getElementById('mobile-menu');
+        var pageStatus = document.getElementById('page-status');
+        var statusMessage = document.getElementById('status-message');
+        var pageSubtitle = document.getElementById('page-subtitle');
+        var checkoutContent = document.getElementById('checkout-content');
+        var userDetailsStep = document.getElementById('user-details-step');
+        var tokenVerificationStep = document.getElementById('token-verification-step');
+        var verificationSuccessMessage = document.getElementById('verification-success-message');
+        var paymentMethodStep = document.getElementById('payment-method-step');
+        var fullNameInput = document.getElementById('full_name');
+        var emailInput = document.getElementById('email');
+        var sendTokenBtn = document.getElementById('send-token-btn');
+        var tokenInput = document.getElementById('token');
+        var verifyTokenBtn = document.getElementById('verify-token-btn');
+        var tokenFeedback = document.getElementById('token-feedback');
+        var payNowBtn = document.getElementById('pay-now-btn');
+        var applyCouponBtn = document.getElementById('apply-coupon-btn');
+        var couponCodeInput = document.getElementById('coupon_code');
+        var couponFeedback = document.getElementById('coupon-feedback');
+        var subtotalEl = document.getElementById('subtotal-amount');
+        var discountEl = document.getElementById('discount-amount');
+        var serviceFeeEl = document.getElementById('service-fee');
+        var totalEl = document.getElementById('total-amount');
+        var transferRadio = document.getElementById('transfer');
+        var qrisLabel = document.querySelector('label[for="qris"]');
+        var paymentGatewayLabel = document.querySelector('label[for="paymentgateway"]');
+        
+        const API_URL = 'https://api.senrima.web.id';
 
         // --- Helper Functions ---
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
@@ -182,7 +210,7 @@
             var subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             var discount = orderData.diskon;
             
-            if (discount >= subtotal) {
+            if (discount >= subtotal && subtotal > 0) {
                 orderData.biayaLayanan = 0;
             } else {
                 orderData.biayaLayanan = parseFloat(serviceFeeEl.getAttribute('data-fee')) || 5000;
@@ -198,21 +226,27 @@
             totalEl.textContent = formatCurrency(orderData.totalPembayaran);
 
             if (orderData.totalPembayaran <= 0) {
-                // ... (logika diskon 100% tetap sama)
+                qrisLabel.classList.add('hidden');
+                paymentGatewayLabel.classList.add('hidden');
+                transferRadio.checked = true;
+                orderData.metodePembayaran = 'transfer';
+                payNowBtn.textContent = 'Klaim & Selesaikan';
+            } else {
+                qrisLabel.classList.remove('hidden');
+                paymentGatewayLabel.classList.remove('hidden');
+                payNowBtn.textContent = 'Bayar Sekarang';
             }
         };
 
-        // --- FUNGSI BARU UNTUK MERENDER KARTU PRODUK DI RINGKASAN ---
         function renderCartSummary() {
             const cart = getCart();
-            orderData.items = cart;
-            cartItemsSummary.innerHTML = ''; // Kosongkan dulu
-
             if (cart.length === 0) {
-                // Jika keranjang kosong, arahkan kembali ke halaman produk
-                window.location.href = 'view.html';
+                window.location.href = 'view.html'; // Arahkan jika keranjang kosong
                 return;
             }
+            
+            orderData.items = cart;
+            cartItemsSummary.innerHTML = ''; 
 
             cart.forEach(item => {
                 const itemHTML = `
@@ -233,13 +267,196 @@
             updateSummary();
         }
 
+        const handleFinalPayment = async (event) => {
+            event.preventDefault();
+            
+            payNowBtn.disabled = true;
+            payNowBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Memproses...
+            `;
+
+            orderData.namaPembeli = fullNameInput.value;
+            orderData.emailPembeli = emailInput.value;
+            orderData.metodePembayaran = document.querySelector('input[name="payment_method"]:checked').value;
+
+            var payload = {
+                kontrol: 'proteksi',
+                action: 'buatinvoice',
+                data: orderData
+            };
+
+            try {
+                var response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                var result = await response.json();
+
+                if (response.ok && result.status === 'sukses' && result.paymentLink) {
+                    window.location.href = result.paymentLink;
+                } else {
+                    alert(result.message || 'Gagal membuat invoice. Silakan coba lagi.');
+                    payNowBtn.disabled = false;
+                    payNowBtn.innerHTML = 'Bayar Sekarang';
+                }
+            } catch (error) {
+                console.error("Gagal memproses pembayaran:", error);
+                alert('Terjadi kesalahan. Silakan coba beberapa saat lagi.');
+                payNowBtn.disabled = false;
+                payNowBtn.innerHTML = 'Bayar Sekarang';
+            }
+        };
+
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
             renderCartSummary();
-            // ... (sisa event listener tetap sama)
         });
 
-        // ... (semua fungsi dan event listener lain tetap sama)
+        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        sendTokenBtn.addEventListener('click', async () => {
+            if (fullNameInput.value.trim() === '' || emailInput.value.trim() === '') {
+                alert('Nama dan Email harus diisi.');
+                return;
+            }
+
+            sendTokenBtn.disabled = true;
+            sendTokenBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Mengirim...
+            `;
+            
+            var payload = {
+                kontrol: 'proteksi',
+                action: 'kirimotpbayar',
+                email: emailInput.value,
+                nama: fullNameInput.value
+            };
+
+            try {
+                var response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                var result = await response.json();
+                if (response.ok && result.status === 'sukses') {
+                    userDetailsStep.disabled = true; 
+                    sendTokenBtn.classList.add('hidden'); 
+                    tokenVerificationStep.classList.remove('hidden');
+                    tokenFeedback.textContent = `OTP telah dikirim ke ${emailInput.value}`;
+                    tokenFeedback.classList.add('text-blue-600');
+                } else {
+                    alert(result.message || 'Gagal mengirim OTP. Silakan coba lagi.');
+                    sendTokenBtn.disabled = false;
+                    sendTokenBtn.innerHTML = 'Kirim OTP ke Email';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan. Periksa koneksi Anda dan coba lagi.');
+                sendTokenBtn.disabled = false;
+                sendTokenBtn.innerHTML = 'Kirim OTP ke Email';
+            }
+        });
+
+        verifyTokenBtn.addEventListener('click', async () => {
+            if (tokenInput.value.trim() === '') {
+                alert('Kode OTP harus diisi.');
+                return;
+            }
+            
+            verifyTokenBtn.disabled = true;
+            verifyTokenBtn.innerHTML = 'Memverifikasi...';
+
+            var payload = {
+                kontrol: 'proteksi',
+                action: 'cekotpbayar',
+                email: emailInput.value,
+                otp: tokenInput.value
+            };
+            
+            try {
+                var response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                var result = await response.json();
+                if (response.ok && result.status === 'sukses') {
+                    tokenVerificationStep.classList.add('hidden'); 
+                    verificationSuccessMessage.classList.remove('hidden'); 
+                    paymentMethodStep.disabled = false;
+                    payNowBtn.disabled = false;
+                } else {
+                    tokenFeedback.textContent = result.message || 'OTP salah. Silakan coba lagi.';
+                    tokenFeedback.classList.remove('text-green-600', 'text-blue-600');
+                    tokenFeedback.classList.add('text-red-500');
+                    verifyTokenBtn.disabled = false;
+                    verifyTokenBtn.innerHTML = 'Verifikasi OTP';
+                }
+            } catch(error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan saat verifikasi.');
+                verifyTokenBtn.disabled = false;
+                verifyTokenBtn.innerHTML = 'Verifikasi OTP';
+            }
+        });
+
+        applyCouponBtn.addEventListener('click', async () => {
+            var code = couponCodeInput.value.trim();
+            if (!code) {
+                alert('Silakan masukkan kode kupon.');
+                return;
+            }
+
+            applyCouponBtn.disabled = true;
+            applyCouponBtn.textContent = '...';
+            couponFeedback.textContent = '';
+
+            var payload = {
+                kontrol: 'proteksi',
+                action: 'cekkupon',
+                kodeKupon: code
+            };
+
+            try {
+                var response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                var result = await response.json();
+
+                if (response.ok && result.status === 'sukses') {
+                    var coupon = result.data;
+                    orderData.diskon = (coupon.tipe === 'fixed') ? parseFloat(coupon.nilai) : orderData.items.reduce((sum, item) => sum + item.price, 0) * parseFloat(coupon.nilai);
+                    orderData.kodeKupon = code;
+                    couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
+                    couponFeedback.classList.add('text-green-600');
+                    couponFeedback.classList.remove('text-red-500');
+                } else {
+                    throw new Error(result.message || 'Kupon tidak valid.');
+                }
+            } catch (error) {
+                orderData.diskon = 0;
+                orderData.kodeKupon = '';
+                couponFeedback.textContent = error.message;
+                couponFeedback.classList.add('text-red-500');
+                couponFeedback.classList.remove('text-green-600');
+            } finally {
+                updateSummary();
+                applyCouponBtn.disabled = false;
+                applyCouponBtn.textContent = 'Terapkan';
+            }
+        });
     </script>
 </body>
 </html>
