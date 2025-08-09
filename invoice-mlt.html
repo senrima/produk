@@ -221,17 +221,13 @@
             }
             document.getElementById('invoice-status-container').innerHTML = `<span class="font-semibold">Status:</span> ${statusBadge}`;
 
-            // --- LOGIKA BARU UNTUK MENAMPILKAN BANYAK PRODUK ---
             const itemsBody = document.getElementById('invoice-items-body');
             const productIds = data.IDProduk.split(', ');
             const productNames = data.NamaProduk.split(', ');
-            
-            // Asumsi harga produk adalah subtotal dari semua item
             const subtotal = parseFloat(data.HargaProduk);
             
+            let itemsHTML = '';
             if (productIds.length > 1) {
-                // Jika lebih dari satu produk, tampilkan sebagai daftar
-                let itemsHTML = '';
                 productNames.forEach((name, index) => {
                     itemsHTML += `
                         <tr class="border-b border-gray-100">
@@ -243,15 +239,18 @@
                         </tr>
                     `;
                 });
-                itemsBody.innerHTML = itemsHTML;
-                document.getElementById('product-price-inv').parentElement.style.display = 'none'; // Sembunyikan baris harga tunggal
             } else {
-                // Jika hanya satu produk, tampilkan seperti biasa
-                document.getElementById('product-name-inv').textContent = data.NamaProduk;
-                document.getElementById('product-id-inv').textContent = `ID Produk: ${data.IDProduk}`;
-                document.getElementById('product-price-inv').textContent = formatCurrency(subtotal);
+                itemsHTML = `
+                    <tr class="border-b border-gray-100">
+                        <td class="p-4">
+                            <p id="product-name-inv" class="font-semibold text-gray-800">${data.NamaProduk}</p>
+                            <p id="product-id-inv" class="text-sm text-gray-500">ID Produk: ${data.IDProduk}</p>
+                        </td>
+                        <td id="product-price-inv" class="p-4 text-right font-medium text-gray-800">${formatCurrency(subtotal)}</td>
+                    </tr>
+                `;
             }
-            // --- AKHIR LOGIKA BARU ---
+            itemsBody.innerHTML = itemsHTML;
 
             document.getElementById('subtotal-inv').textContent = formatCurrency(subtotal);
             
