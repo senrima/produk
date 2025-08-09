@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran - S-Tools ID</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F9FAFB; /* Light Gray */
+            color: #1F2937;
+        }
+        fieldset:disabled { opacity: 0.5; pointer-events: none; }
+        button:disabled { cursor: not-allowed; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header Section -->
+    <header class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="flex items-center gap-3 text-2xl font-bold text-gray-900">
+                    <img src="stools_logo.png" alt="Logo S-Tools ID" class="h-8 w-auto">
+                    <span>S-Tools ID</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="view.html" class="text-gray-600 hover:text-indigo-600 font-semibold text-sm">
+                        &larr; Lanjut Belanja
+                    </a>
+                    <a href="https://s-tools.id/app/" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 text-sm">
+                        Akses
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Payment Section -->
+        <section class="py-12 md:py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-10">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Checkout</h1>
+                    <p id="page-subtitle" class="text-lg text-gray-600 mt-2">Selesaikan pesanan Anda dalam beberapa langkah mudah.</p>
+                </div>
+
+                <div id="checkout-content" class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Kolom Kiri: Ringkasan Pesanan -->
+                    <div class="bg-white p-8 rounded-2xl border border-gray-200">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
+                        
+                        <!-- Daftar Item Keranjang -->
+                        <div id="cart-items-summary" class="space-y-4 mb-6">
+                            <!-- Item akan di-render di sini oleh JavaScript -->
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="coupon_code" class="block text-sm font-medium text-gray-700 mb-1">Kode Kupon</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="coupon_code" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="Masukkan kode kupon">
+                                <button type="button" id="apply-coupon-btn" class="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300">Terapkan</button>
+                            </div>
+                            <p id="coupon-feedback" class="text-sm mt-2"></p>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-6 space-y-4">
+                            <div class="flex justify-between text-gray-600"><span>Subtotal</span><span id="subtotal-amount">Rp 0</span></div>
+                            <div class="flex justify-between text-green-600"><span>Diskon</span><span id="discount-amount">- Rp 0</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Biaya Layanan</span><span id="service-fee" data-fee="5000">Rp 5.000</span></div>
+                            <div class="flex justify-between font-bold text-gray-900 text-lg"><span>Total</span><span id="total-amount">Rp 5.000</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Detail Pembayaran -->
+                    <div class="bg-white p-8 rounded-2xl border border-gray-200">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Detail Pembayaran</h2>
+                        <form id="payment-form" onsubmit="handleFinalPayment(event)">
+                            <div class="space-y-6">
+                                <!-- Step 1: User Details -->
+                                <fieldset id="user-details-step">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                                            <input type="text" id="full_name" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="Masukkan nama Anda" required>
+                                        </div>
+                                        <div>
+                                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
+                                            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="email@anda.com" required>
+                                        </div>
+                                        <button type="button" id="send-token-btn" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 flex items-center justify-center">Kirim OTP ke Email</button>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Step 2: Token Verification -->
+                                <fieldset id="token-verification-step" class="hidden">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="token" class="block text-sm font-medium text-gray-700 mb-1">Kode OTP</label>
+                                            <input type="text" id="token" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="Masukkan 6 digit OTP" required>
+                                            <p id="token-feedback" class="text-sm mt-2"></p>
+                                        </div>
+                                        <button type="button" id="verify-token-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 flex items-center justify-center">Verifikasi OTP</button>
+                                    </div>
+                                </fieldset>
+                                
+                                <div id="verification-success-message" class="hidden">
+                                     <p class="text-center text-green-600 bg-green-100 p-4 rounded-lg font-semibold">Akun ini sudah terverifikasi.</p>
+                                </div>
+
+                                <!-- Step 3: Payment Method -->
+                                <fieldset id="payment-method-step" disabled>
+                                    <div class="space-y-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Metode Pembayaran</label>
+                                            <div class="space-y-3">
+                                                <label for="transfer" class="flex items-center p-4 border border-gray-300 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer">
+                                                    <input type="radio" id="transfer" name="payment_method" value="transfer" class="h-4 w-4 text-indigo-600" checked>
+                                                    <span class="ml-3 font-medium text-gray-800">Transfer Bank</span>
+                                                </label>
+                                                <label for="qris" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-not-allowed opacity-50">
+                                                    <input type="radio" id="qris" name="payment_method" value="qris" class="h-4 w-4 text-indigo-600" disabled>
+                                                    <span class="ml-3 font-medium text-gray-800">QRIS</span>
+                                                </label>
+                                                <label for="paymentgateway" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-not-allowed opacity-50">
+                                                    <input type="radio" id="paymentgateway" name="payment_method" value="paymentgateway" class="h-4 w-4 text-indigo-600" disabled>
+                                                    <span class="ml-3 font-medium text-gray-800">Payment Gateway</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" id="pay-now-btn" class="w-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg flex items-center justify-center" disabled>
+                                            Bayar Sekarang
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-8 border-t border-gray-200">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2025 S-Tools ID. Semua Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+    <script src="keranjang.js"></script>
+    <script>
+        // --- Objek Global untuk Data Pesanan ---
+        var orderData = {
+            items: [], // Sekarang menjadi array
+            kodeKupon: '',
+            diskon: 0,
+            biayaLayanan: 5000,
+            totalPembayaran: 0,
+            namaPembeli: '',
+            emailPembeli: '',
+            metodePembayaran: 'transfer'
+        };
+
+        // --- Setup Element ---
+        var cartItemsSummary = document.getElementById('cart-items-summary');
+        // ... (semua variabel elemen lain tetap sama)
+
+        // --- Helper Functions ---
+        const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        
+        const updateSummary = () => {
+            var subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            var discount = orderData.diskon;
+            
+            if (discount >= subtotal) {
+                orderData.biayaLayanan = 0;
+            } else {
+                orderData.biayaLayanan = parseFloat(serviceFeeEl.getAttribute('data-fee')) || 5000;
+            }
+
+            var serviceFee = orderData.biayaLayanan;
+            var total = subtotal - discount + serviceFee;
+            orderData.totalPembayaran = total < 0 ? 0 : total;
+
+            subtotalEl.textContent = formatCurrency(subtotal);
+            discountEl.textContent = `- ${formatCurrency(discount)}`;
+            serviceFeeEl.textContent = formatCurrency(serviceFee);
+            totalEl.textContent = formatCurrency(orderData.totalPembayaran);
+
+            if (orderData.totalPembayaran <= 0) {
+                // ... (logika diskon 100% tetap sama)
+            }
+        };
+
+        // --- FUNGSI BARU UNTUK MERENDER KARTU PRODUK DI RINGKASAN ---
+        function renderCartSummary() {
+            const cart = getCart();
+            orderData.items = cart;
+            cartItemsSummary.innerHTML = ''; // Kosongkan dulu
+
+            if (cart.length === 0) {
+                // Jika keranjang kosong, arahkan kembali ke halaman produk
+                window.location.href = 'view.html';
+                return;
+            }
+
+            cart.forEach(item => {
+                const itemHTML = `
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">${item.name}</h3>
+                                <p class="text-sm text-gray-500">${item.id}</p>
+                            </div>
+                        </div>
+                        <p class="font-semibold text-gray-800">Rp ${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                `;
+                cartItemsSummary.innerHTML += itemHTML;
+            });
+
+            updateSummary();
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCartSummary();
+            // ... (sisa event listener tetap sama)
+        });
+
+        // ... (semua fungsi dan event listener lain tetap sama)
+    </script>
+</body>
+</html>

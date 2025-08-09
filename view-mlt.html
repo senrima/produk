@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semua Produk - S-Tools ID</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #FFFFFF; color: #1F2937; }
+        .filter-btn.active { background-color: #4F46E5; color: #FFFFFF; border-color: #4F46E5; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header Section -->
+    <header class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="flex items-center gap-3 text-2xl font-bold text-gray-900">
+                    <img src="stools_logo.png" alt="S-Tools ID Logo" class="h-8 w-auto">
+                    <span>S-Tools ID</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="/#tentang" class="text-gray-600 hover:text-indigo-600 transition-colors">Tentang</a>
+                    <a href="/#layanan" class="text-gray-600 hover:text-indigo-600 transition-colors">Layanan</a>
+                    <a href="view.html" class="text-indigo-600 font-semibold">Produk</a>
+                    <a href="/#kontak" class="text-gray-600 hover:text-indigo-600 transition-colors">Kontak</a>
+                    <a href="https://s-tools.id/app/" class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all transform hover:scale-105">
+                        Akses
+                    </a>
+                </nav>
+                <!-- Ikon Keranjang -->
+                <a href="keranjang.html" class="relative text-gray-600 hover:text-indigo-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Product Catalog Section -->
+        <section id="produk-list" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Semua Produk</h1>
+                    <p class="text-lg text-gray-600 mt-2">Temukan semua aset digital yang Anda butuhkan di sini.</p>
+                </div>
+
+                <div class="flex justify-center flex-wrap gap-3 mb-12">
+                    <button class="filter-btn active py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="all">Semua</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="tools">Tools</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="ebook">Ebook</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="tutorial">Tutorial</button>
+                    <button class="filter-btn py-2 px-5 rounded-full border border-gray-300 font-semibold transition-colors" data-filter="aset">File Aset</button>
+                </div>
+                
+                <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <p id="loading-message" class="col-span-full text-center text-gray-500">Memuat produk...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="kontak" class="bg-gray-900 text-gray-300 pt-16 pb-8 scroll-mt-20">
+        <!-- ... (Kode footer Anda tetap sama) ... -->
+    </footer>
+    
+    <!-- Video Modal -->
+    <div id="video-modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <!-- ... (Kode modal Anda tetap sama) ... -->
+    </div>
+    
+    <!-- Notifikasi "Ditambahkan ke Keranjang" -->
+    <div id="cart-notification" class="fixed top-5 right-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
+        Produk ditambahkan ke keranjang!
+    </div>
+
+    <script src="keranjang.js"></script>
+    <script>
+        const API_URL = 'https://api.senrima.web.id';
+        const productGrid = document.getElementById('product-grid');
+        const loadingMessage = document.getElementById('loading-message');
+
+        function createProductCard(product) {
+            const priceFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(product.Harga);
+            
+            // Siapkan data produk sebagai objek untuk dikirim ke fungsi keranjang
+            const productData = {
+                id: product.IDProduk,
+                name: product.NamaProduk,
+                price: product.Harga,
+                image: product.GambarURL
+            };
+            const productDataString = JSON.stringify(productData);
+
+            const videoButtonHTML = product.VideoID ? `
+                <button class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 open-modal" data-video-id="${product.VideoID}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                </button>
+            ` : '';
+
+            const buttonsHTML = `
+                <div class="mt-auto pt-4 grid grid-cols-2 gap-3">
+                    <button onclick='addToCart(${productDataString})' class="block w-full text-center bg-white border border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors">
+                        + Keranjang
+                    </button>
+                    <button onclick='buyNow(${productDataString})' class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                        ${product.TombolTeks}
+                    </button>
+                </div>
+            `;
+
+            return `
+                <div class="product-card flex flex-col bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-xl hover:border-indigo-500 transition-all duration-300" data-category="${product.Kategori.toLowerCase()}">
+                    <div class="relative mb-4 overflow-hidden rounded-lg group">
+                        <img src="${product.GambarURL}" alt="Gambar ${product.NamaProduk}" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-300">
+                        ${videoButtonHTML}
+                    </div>
+                    <div class="flex flex-col flex-grow">
+                        <p class="text-3xl font-bold text-gray-900">${priceFormatted}</p>
+                        <span class="text-sm font-semibold text-indigo-600 mt-2">${product.SubKategori}</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-1">${product.NamaProduk}</h3>
+                        <p class="text-gray-600 my-3 flex-grow">${product.Deskripsi}</p>
+                    </div>
+                    ${buttonsHTML}
+                </div>
+            `;
+        }
+
+        // ... (sisa JavaScript tetap sama)
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndRenderProducts();
+            updateCartIcon();
+        });
+    </script>
+</body>
+</html>
