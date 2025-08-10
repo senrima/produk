@@ -36,14 +36,6 @@
                 margin: 0;
                 padding: 0;
             }
-            .page-footer {
-                position: fixed;
-                bottom: 20px;
-                width: 100%;
-                text-align: center;
-                font-size: 10px;
-                color: #6b7280;
-            }
         }
     </style>
 </head>
@@ -184,13 +176,10 @@
 
         </div>
         
-        <div class="hidden print-only page-footer">
-            Halaman 1
-        </div>
     </div>
 
     <script>
-        const API_URL = 'https://api.senrima.web.id'; // Ganti dengan URL Web App Anda
+        const API_URL = 'https://api.senrima.web.id';
 
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
 
@@ -222,33 +211,22 @@
             document.getElementById('invoice-status-container').innerHTML = `<span class="font-semibold">Status:</span> ${statusBadge}`;
 
             const itemsBody = document.getElementById('invoice-items-body');
-            const productIds = data.IDProduk.split(', ');
-            const productNames = data.NamaProduk.split(', ');
-            const subtotal = parseFloat(data.HargaProduk);
-            
             let itemsHTML = '';
-            if (productIds.length > 1) {
-                productNames.forEach((name, index) => {
+            let subtotal = 0;
+
+            if (data.items && Array.isArray(data.items)) {
+                data.items.forEach(item => {
+                    subtotal += parseFloat(item.price) * item.quantity;
                     itemsHTML += `
                         <tr class="border-b border-gray-100">
                             <td class="p-4">
-                                <p class="font-semibold text-gray-800">${name}</p>
-                                <p class="text-sm text-gray-500">ID Produk: ${productIds[index]}</p>
+                                <p class="font-semibold text-gray-800">${item.name}</p>
+                                <p class="text-sm text-gray-500">ID Produk: ${item.id}</p>
                             </td>
-                            <td class="p-4 text-right font-medium text-gray-800">-</td>
+                            <td class="p-4 text-right font-medium text-gray-800">${formatCurrency(item.price)}</td>
                         </tr>
                     `;
                 });
-            } else {
-                itemsHTML = `
-                    <tr class="border-b border-gray-100">
-                        <td class="p-4">
-                            <p id="product-name-inv" class="font-semibold text-gray-800">${data.NamaProduk}</p>
-                            <p id="product-id-inv" class="text-sm text-gray-500">ID Produk: ${data.IDProduk}</p>
-                        </td>
-                        <td id="product-price-inv" class="p-4 text-right font-medium text-gray-800">${formatCurrency(subtotal)}</td>
-                    </tr>
-                `;
             }
             itemsBody.innerHTML = itemsHTML;
 
