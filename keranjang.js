@@ -94,7 +94,7 @@ function renderCartPage() {
         cartContainer.innerHTML = `
             <div class="text-center py-12">
                 <p class="text-xl text-gray-600 mb-4">Keranjang belanja Anda kosong.</p>
-                <a href="view.html" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700">Mulai Belanja</a>
+                <a href="view-mlt.html" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700">Mulai Belanja</a>
             </div>
         `;
         return;
@@ -135,4 +135,5 @@ function renderCartPage() {
 
     cartContainer.innerHTML = itemsHTML + summaryHTML;
 }
+
 
