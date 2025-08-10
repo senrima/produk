@@ -42,7 +42,7 @@ function buyNow(product) {
     const singleItemCart = [{ ...product, quantity: 1 }];
     saveCart(singleItemCart);
     // Langsung arahkan ke halaman checkout.
-    window.location.href = 'checkout-mlt.html';
+    window.location.href = 'checkout.html';
 }
 
 /**
@@ -94,7 +94,7 @@ function renderCartPage() {
         cartContainer.innerHTML = `
             <div class="text-center py-12">
                 <p class="text-xl text-gray-600 mb-4">Keranjang belanja Anda kosong.</p>
-                <a href="view-mlt.html" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700">Mulai Belanja</a>
+                <a href="view.html" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700">Mulai Belanja</a>
             </div>
         `;
         return;
@@ -127,7 +127,7 @@ function renderCartPage() {
                 <span>Total</span>
                 <span>Rp ${total.toLocaleString('id-ID')}</span>
             </div>
-            <a href="checkout-mlt.html" class="block w-full text-center bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity mt-6">
+            <a href="checkout.html" class="block w-full text-center bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity mt-6">
                 Lanjutkan ke Checkout
             </a>
         </div>
@@ -135,5 +135,6 @@ function renderCartPage() {
 
     cartContainer.innerHTML = itemsHTML + summaryHTML;
 }
+
 
 
