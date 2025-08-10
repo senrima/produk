@@ -42,7 +42,7 @@ function buyNow(product) {
     const singleItemCart = [{ ...product, quantity: 1 }];
     saveCart(singleItemCart);
     // Langsung arahkan ke halaman checkout.
-    window.location.href = 'checkout.html';
+    window.location.href = 'checkout-mlt.html';
 }
 
 /**
@@ -127,7 +127,7 @@ function renderCartPage() {
                 <span>Total</span>
                 <span>Rp ${total.toLocaleString('id-ID')}</span>
             </div>
-            <a href="checkout.html" class="block w-full text-center bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity mt-6">
+            <a href="checkout-mlt.html" class="block w-full text-center bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity mt-6">
                 Lanjutkan ke Checkout
             </a>
         </div>
@@ -135,3 +135,4 @@ function renderCartPage() {
 
     cartContainer.innerHTML = itemsHTML + summaryHTML;
 }
+
