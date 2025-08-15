@@ -178,13 +178,10 @@ async function handleFinalPayment(event) {
     event.preventDefault();
     
     payNowBtn.disabled = true;
-    payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" ...></svg>Memproses...`;
+    payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...`;
 
-    // Ambil data dari state yang sudah pasti benar
     orderData.namaPembeli = fullNameInput.value;
     orderData.emailPembeli = emailInput.value;
-    // 'orderData.metodePembayaran' sudah di-update oleh event listener radio button
-    // atau oleh logika kupon 100%. Jadi kita cukup gunakan nilainya.
 
     const payload = {
         kontrol: 'proteksi',
@@ -200,10 +197,13 @@ async function handleFinalPayment(event) {
         });
         const result = await response.json();
 
-        if (response.ok && result.status === 'sukses' && result.paymentLink) {
-            clearCart();
-            window.location.href = result.paymentLink;
+        // --- PERBAIKAN UTAMA DI SINI ---
+        // Cek untuk 'sukses' ATAU 'success' agar lebih aman
+        if (response.ok && (result.status === 'sukses' || result.status === 'success') && result.paymentLink) {
+            clearCart(); // Asumsi fungsi ini ada di keranjang.js
+            window.location.href = result.paymentLink; // Arahkan ke URL pembayaran
         } else {
+            // Jika gagal, tampilkan pesan error dari server
             alert(result.message || 'Gagal membuat invoice. Silakan coba lagi.');
             payNowBtn.disabled = false;
             payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
@@ -361,3 +361,4 @@ applyCouponBtn.addEventListener('click', async () => {
 // ▼▼▼ PASTIKAN BARIS INI ADA DI KODE ANDA ▼▼▼
 document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 // ▲▲▲ AKHIR DARI PERBAIKAN PENTING ▲▲▲
+
