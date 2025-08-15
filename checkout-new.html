@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pembayaran - S-Tools ID</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #F9FAFB; color: #1F2937; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F9FAFB; /* Light Gray */
+            color: #1F2937;
+        }
         fieldset:disabled { opacity: 0.5; pointer-events: none; }
         button:disabled { cursor: not-allowed; }
     </style>
@@ -15,7 +22,20 @@
 <body class="bg-gray-50">
 
     <header class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
-        </header>
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="flex items-center gap-3 text-2xl font-bold text-gray-900">
+                    <img src="aset/stools_logo.png" alt="Logo S-Tools ID" class="h-8 w-auto">
+                    <span>S-Tools ID</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="view.html" class="text-gray-600 hover:text-indigo-600 font-semibold text-sm">
+                        &larr; Lanjut Belanja
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
 
     <main>
         <section class="py-12 md:py-20">
@@ -24,15 +44,29 @@
                     <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Checkout</h1>
                     <p id="page-subtitle" class="text-lg text-gray-600 mt-2">Selesaikan pesanan Anda dalam beberapa langkah mudah.</p>
                 </div>
+
                 <div id="checkout-content" class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <div class="bg-white p-8 rounded-2xl border border-gray-200">
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
+                        
                         <div id="cart-items-summary" class="space-y-4 mb-6">
                             </div>
+
                         <div class="mb-6">
+                            <label for="coupon_code" class="block text-sm font-medium text-gray-700 mb-1">Kode Kupon</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="coupon_code" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="Masukkan kode kupon">
+                                <button type="button" id="apply-coupon-btn" class="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg hover:bg-gray-300">Terapkan</button>
                             </div>
+                            <p id="coupon-feedback" class="text-sm mt-2"></p>
+                        </div>
+
                         <div class="border-t border-gray-200 pt-6 space-y-4">
-                            </div>
+                            <div class="flex justify-between text-gray-600"><span>Subtotal</span><span id="subtotal-amount">Rp 0</span></div>
+                            <div class="flex justify-between text-green-600"><span>Diskon</span><span id="discount-amount">- Rp 0</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Biaya Layanan</span><span id="service-fee" data-fee="5000">Rp 5.000</span></div>
+                            <div class="flex justify-between font-bold text-gray-900 text-lg"><span>Total</span><span id="total-amount">Rp 5.000</span></div>
+                        </div>
                     </div>
 
                     <div class="bg-white p-8 rounded-2xl border border-gray-200">
@@ -40,20 +74,46 @@
                         <form id="payment-form">
                             <div class="space-y-6">
                                 <fieldset id="user-details-step">
-                                    </fieldset>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                                            <input type="text" id="full_name" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="Masukkan nama Anda" required>
+                                        </div>
+                                        <div>
+                                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
+                                            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="email@anda.com" required>
+                                        </div>
+                                        <button type="button" id="send-token-btn" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 flex items-center justify-center">Kirim OTP ke Email</button>
+                                    </div>
+                                </fieldset>
+
                                 <fieldset id="token-verification-step" class="hidden">
-                                    </fieldset>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="token" class="block text-sm font-medium text-gray-700 mb-1">Kode OTP</label>
+                                            <input type="text" id="token" class="w-full px-4 py-3 rounded-lg border border-gray-300" placeholder="Masukkan 6 digit OTP" required>
+                                            <p id="token-feedback" class="text-sm mt-2"></p>
+                                        </div>
+                                        <button type="button" id="verify-token-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 flex items-center justify-center">Verifikasi OTP</button>
+                                    </div>
+                                </fieldset>
+                                
                                 <div id="verification-success-message" class="hidden">
                                     <p class="text-center text-green-600 bg-green-100 p-4 rounded-lg font-semibold">Akun ini sudah terverifikasi.</p>
                                 </div>
+
                                 <fieldset id="payment-method-step" disabled>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Metode Pembayaran</label>
-                                        <div id="payment-options-container" class="space-y-3">
-                                            </div>
-                                    <p class="text-xs text-gray-500 mt-3 text-center">Tambahan biaya layanan mungkin berlaku sesuai metode pembayaran yang Anda pilih.</p>
+                                    <div class="space-y-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Metode Pembayaran</label>
+                                            <div id="payment-options-container" class="space-y-3">
+                                                </div>
+                                            <p class="text-xs text-gray-500 mt-3 text-center">Tambahan biaya layanan mungkin berlaku sesuai metode pembayaran yang Anda pilih.</p>
+                                        </div>
+                                        <button type="submit" id="pay-now-btn" class="w-full bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg text-lg flex items-center justify-center" disabled>
+                                            Bayar Sekarang
+                                        </button>
                                     </div>
-                                    <button type="submit" id="pay-now-btn" class="w-full ..." disabled>Bayar Sekarang</button>
                                 </fieldset>
                             </div>
                         </form>
@@ -69,6 +129,4 @@
     <script src="keranjang.js"></script>
     <script src="js/checkout.js"></script>
 </body>
-
 </html>
-
