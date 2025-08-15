@@ -178,10 +178,13 @@ async function handleFinalPayment(event) {
     event.preventDefault();
     
     payNowBtn.disabled = true;
-    payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...`;
+    payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" ...></svg>Memproses...`;
 
+    // Ambil data dari state yang sudah pasti benar
     orderData.namaPembeli = fullNameInput.value;
     orderData.emailPembeli = emailInput.value;
+    // 'orderData.metodePembayaran' sudah di-update oleh event listener radio button
+    // atau oleh logika kupon 100%. Jadi kita cukup gunakan nilainya.
 
     const payload = {
         kontrol: 'proteksi',
@@ -198,18 +201,18 @@ async function handleFinalPayment(event) {
         const result = await response.json();
 
         if (response.ok && result.status === 'sukses' && result.paymentLink) {
-            clearCart(); // Asumsi fungsi ini ada di keranjang.js
+            clearCart();
             window.location.href = result.paymentLink;
         } else {
             alert(result.message || 'Gagal membuat invoice. Silakan coba lagi.');
             payNowBtn.disabled = false;
-            payNowBtn.textContent = 'Bayar Sekarang';
+            payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
         }
     } catch (error) {
         console.error("Gagal memproses pembayaran:", error);
         alert('Terjadi kesalahan. Silakan coba beberapa saat lagi.');
         payNowBtn.disabled = false;
-        payNowBtn.textContent = 'Bayar Sekarang';
+        payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
     }
 };
 
@@ -327,7 +330,16 @@ applyCouponBtn.addEventListener('click', async () => {
         if (response.ok && (result.status === 'sukses' || result.status === 'success')) {
             const coupon = result.data;
             const subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            orderData.diskon = (coupon.tipe === 'fixed') ? parseFloat(coupon.nilai) : subtotal * (parseFloat(coupon.nilai) / 100);
+            
+            // --- LOGIKA KALKULASI YANG DIPERBAIKI ---
+            if (coupon.tipe.toLowerCase() === 'fixed') {
+                orderData.diskon = parseFloat(coupon.nilai);
+            } else if (coupon.tipe.toLowerCase() === 'percentage') {
+                // Selalu bagi dengan 100 untuk persentase
+                orderData.diskon = subtotal * (parseFloat(coupon.nilai) / 100);
+            }
+            // --- AKHIR PERBAIKAN ---
+
             orderData.kodeKupon = code;
             couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
             couponFeedback.className = 'text-sm mt-2 text-green-600';
