@@ -357,3 +357,7 @@ applyCouponBtn.addEventListener('click', async () => {
         applyCouponBtn.textContent = 'Terapkan';
     }
 });
+
+// ▼▼▼ PASTIKAN BARIS INI ADA DI KODE ANDA ▼▼▼
+document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
+// ▲▲▲ AKHIR DARI PERBAIKAN PENTING ▲▲▲
