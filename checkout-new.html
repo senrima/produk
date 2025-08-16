@@ -244,6 +244,12 @@
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         
         const updateSummary = () => {
+
+            // ▼▼▼ TAMBAHKAN PENGECEKAN INI ▼▼▼
+            // Pastikan `orderData.items` adalah sebuah array sebelum dihitung.
+            const itemsToCalculate = Array.isArray(orderData.items) ? orderData.items : [];
+            // ▲▲▲ AKHIR PERUBAHAN ▲▲▲
+            
             var subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             var discount = orderData.diskon;
             
@@ -523,4 +529,5 @@
     </script>
 </body>
 </html>
+
 
