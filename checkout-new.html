@@ -311,7 +311,7 @@
                 });
                 const result = await response.json();
                 if (response.ok && (result.status === 'sukses' || result.status === 'success') && result.paymentLink) {
-                    clearCart();
+                    //clearCart();
                     window.location.href = result.paymentLink;
                 } else {
                     alert(result.message || 'Gagal membuat invoice. Silakan coba lagi.');
@@ -472,6 +472,7 @@
     </script>
 </body>
 </html>
+
 
 
 
