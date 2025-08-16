@@ -81,6 +81,23 @@ function showCartNotification() {
     }
 }
 
+
+// Di dalam file: keranjang.js
+
+function clearCart() {
+    // Menghapus item 'cart' dari localStorage
+    localStorage.removeItem('s-tools-cart');
+    
+    // (Opsional) Update juga ikon keranjang di header jika ada
+    if (typeof updateCartIcon === 'function') {
+        updateCartIcon();
+    }
+    
+    console.log('Keranjang telah dikosongkan.');
+}
+
+
+
 /**
  * Fungsi untuk merender konten di halaman keranjang.html.
  */
@@ -135,6 +152,7 @@ function renderCartPage() {
 
     cartContainer.innerHTML = itemsHTML + summaryHTML;
 }
+
 
 
 
