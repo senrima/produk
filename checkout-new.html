@@ -89,6 +89,10 @@
                                         <button type="button" id="verify-token-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 flex items-center justify-center">Verifikasi OTP</button>
                                     </div>
                                 </fieldset>
+
+                                <div id="verification-success-message" class="hidden">
+                                     <p class="text-center text-green-600 bg-green-100 p-4 rounded-lg font-semibold">Akun ini sudah terverifikasi.</p>
+                                </div>
                                 
                                 <fieldset id="payment-method-step" disabled>
                                     <div class="space-y-6">
@@ -401,7 +405,7 @@
                 var result = await response.json();
                 if (response.ok && result.status === 'sukses') {
                     tokenVerificationStep.classList.add('hidden'); 
-                //    verificationSuccessMessage.classList.remove('hidden'); 
+                    verificationSuccessMessage.classList.remove('hidden'); 
                     paymentMethodStep.disabled = false;
                     payNowBtn.disabled = false;
                 } else {
@@ -472,6 +476,7 @@
     </script>
 </body>
 </html>
+
 
 
 
