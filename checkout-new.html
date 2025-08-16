@@ -401,7 +401,7 @@
                 var result = await response.json();
                 if (response.ok && result.status === 'sukses') {
                     tokenVerificationStep.classList.add('hidden'); 
-                    verificationSuccessMessage.classList.remove('hidden'); 
+                //    verificationSuccessMessage.classList.remove('hidden'); 
                     paymentMethodStep.disabled = false;
                     payNowBtn.disabled = false;
                 } else {
@@ -472,6 +472,7 @@
     </script>
 </body>
 </html>
+
 
 
 
