@@ -295,6 +295,29 @@
             updateSummary();
         }
 
+        function transitionToVerifiedState() {
+            // Sembunyikan semua tombol dan elemen verifikasi di dalam fieldset pertama
+            sendTokenBtn.classList.add('hidden');
+            if (googleLoginBtn.previousElementSibling) {
+                googleLoginBtn.previousElementSibling.classList.add('hidden'); // Sembunyikan divider "Atau"
+            }
+            googleLoginBtn.classList.add('hidden');
+            
+            // Pastikan fieldset pertama tidak tersembunyi, tapi nonaktif
+            userDetailsStep.disabled = true;
+            userDetailsStep.classList.remove('hidden');
+        
+            // Sembunyikan form OTP
+            tokenVerificationStep.classList.add('hidden');
+            
+            // Tampilkan pesan sukses verifikasi
+            verificationSuccessMessage.classList.remove('hidden');
+            
+            // Aktifkan langkah selanjutnya
+            paymentMethodStep.disabled = false;
+            payNowBtn.disabled = false;
+        }
+        
         function handleCredentialResponse(response) {
             // Mendekode token untuk mendapatkan profil pengguna
             const responsePayload = JSON.parse(atob(response.credential.split('.')[1]));
@@ -303,13 +326,8 @@
             fullNameInput.value = responsePayload.name;
             emailInput.value = responsePayload.email;
         
-            // Langsung verifikasi & lompat ke pembayaran
-    //        userDetailsStep.classList.add('hidden'); // Sembunyikan form nama & email
-            userDetailsStep.disabled = true; 
-            tokenVerificationStep.classList.add('hidden'); // Pastikan form OTP juga tersembunyi
-            verificationSuccessMessage.classList.remove('hidden'); // Tampilkan pesan sukses
-            paymentMethodStep.disabled = false; // Aktifkan metode pembayaran
-            payNowBtn.disabled = false; // Aktifkan tombol bayar
+            // Atur tampilan ke status terverifikasi
+            transitionToVerifiedState();
         }
         
         function initializeGoogleSignIn() {
@@ -455,10 +473,8 @@
                 });
                 var result = await response.json();
                 if (response.ok && result.status === 'sukses') {
-                    tokenVerificationStep.classList.add('hidden'); 
-                    verificationSuccessMessage.classList.remove('hidden'); 
-                    paymentMethodStep.disabled = false;
-                    payNowBtn.disabled = false;
+                    // Cukup panggil fungsi baru kita
+                    transitionToVerifiedState();
                 } else {
                     tokenFeedback.textContent = result.message || 'OTP salah. Silakan coba lagi.';
                     tokenFeedback.classList.remove('text-green-600', 'text-blue-600');
@@ -527,6 +543,7 @@
     </script>
 </body>
 </html>
+
 
 
 
