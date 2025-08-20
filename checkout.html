@@ -307,9 +307,10 @@
             userDetailsStep.disabled = true;
             userDetailsStep.classList.remove('hidden');
         
-            // Sembunyikan form OTP
+            // Sembunyikan dan NONAKTIFKAN form OTP
             tokenVerificationStep.classList.add('hidden');
-            
+            tokenVerificationStep.disabled = true; // <-- TAMBAHKAN BARIS KUNCI INI
+        
             // Tampilkan pesan sukses verifikasi
             verificationSuccessMessage.classList.remove('hidden');
             
@@ -558,3 +559,4 @@
     </script>
 </body>
 </html>
+
