@@ -318,22 +318,61 @@
             payNowBtn.disabled = false;
         }
         
-        function handleCredentialResponse(response) {
-            // Mendekode token untuk mendapatkan profil pengguna
-            const responsePayload = JSON.parse(atob(response.credential.split('.')[1]));
+        async function handleCredentialResponse(response) {
+            // Tampilkan status loading di tombol google untuk feedback
+            googleLoginBtn.disabled = true;
+            googleLoginBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                Memverifikasi...
+            `;
         
-            // Isi otomatis form
-            fullNameInput.value = responsePayload.name;
-            emailInput.value = responsePayload.email;
-
-            orderData.namaPembeli = responsePayload.name;
-            orderData.emailPembeli = responsePayload.email;
-
-            // INI BAGIAN PENTINGNYA
-            orderData.verifikasiVia = 'google'; // Tambahkan penanda verifikasi
+            try {
+                // 1. Mendekode token untuk mendapatkan profil pengguna
+                const responsePayload = JSON.parse(atob(response.credential.split('.')[1]));
+        
+                // 2. Isi otomatis form dan simpan data
+                fullNameInput.value = responsePayload.name;
+                emailInput.value = responsePayload.email;
+                orderData.namaPembeli = responsePayload.name;
+                orderData.emailPembeli = responsePayload.email;
+                orderData.verifikasiVia = 'google';
+        
+                // 3. (LANGKAH BARU YANG KRUSIAL) Panggil API 'kirimotpbayar' untuk mendaftarkan transaksi di server
+                // Ini meniru langkah pertama dari alur OTP
+                const registrationPayload = {
+                    kontrol: 'proteksi',
+                    action: 'kirimotpbayar', // Menggunakan action yang sama dengan tombol OTP
+                    email: responsePayload.email,
+                    nama: responsePayload.name
+                };
+        
+                const registrationResponse = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(registrationPayload)
+                });
                 
-            // Atur tampilan ke status terverifikasi
-            transitionToVerifiedState();
+                const registrationResult = await registrationResponse.json();
+        
+                if (!registrationResponse.ok || registrationResult.status !== 'sukses') {
+                    // Jika pendaftaran gagal, lempar error
+                    throw new Error(registrationResult.message || 'Gagal mendaftarkan email ke server.');
+                }
+        
+                // 4. Jika pendaftaran di server berhasil, lanjutkan ke langkah pembayaran
+                console.log("Email berhasil didaftarkan di server via Google Login.");
+                transitionToVerifiedState();
+        
+            } catch (error) {
+                console.error("Error selama verifikasi Google:", error);
+                alert("Terjadi kesalahan saat verifikasi dengan Google: " + error.message);
+                // Kembalikan tombol ke keadaan semula jika error
+                googleLoginBtn.disabled = false;
+                googleLoginBtn.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17.64,9.2c0-.63-.06-1.25-.16-1.84H9.18v3.48h4.74c-.2,1.13-.83,2.08-1.78,2.72v2.26h2.9c1.7-1.56,2.68-3.87,2.68-6.62Z" fill="#4285F4"></path><path d="M9.18,18c2.43,0,4.47-.8,5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35,0-4.35-1.58-5.06-3.71H1.1v2.33C2.54,16.27,5.61,18,9.18,18Z" fill="#34A853"></path><path d="M4.12,10.71a5.37,5.37,0,0,1,0-3.42V4.96H1.1A8.99,8.99,0,0,0,0,9a8.99,8.99,0,0,0,1.1,4.04l3.02-2.33Z" fill="#FBBC05"></path><path d="M9.18,3.54c1.32,0,2.52.46,3.46,1.36l2.58-2.58C13.65.8,11.61,0,9.18,0,5.61,0,2.54,1.73,1.1,4.96l3.02,2.33C4.83,5.12,6.83,3.54,9.18,3.54Z" fill="#EA4335"></path></svg>
+                    Login dengan Google
+                `;
+            }
         }
         
         function initializeGoogleSignIn() {
@@ -558,6 +597,7 @@
     </script>
 </body>
 </html>
+
 
 
 
