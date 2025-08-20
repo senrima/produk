@@ -337,29 +337,6 @@
                 orderData.emailPembeli = responsePayload.email;
                 orderData.verifikasiVia = 'google';
         
-                // 3. (LANGKAH BARU YANG KRUSIAL) Panggil API 'kirimotpbayar' untuk mendaftarkan transaksi di server
-                // Ini meniru langkah pertama dari alur OTP
-                const registrationPayload = {
-                    kontrol: 'proteksi',
-                    action: 'kirimotpbayar', // Menggunakan action yang sama dengan tombol OTP
-                    email: responsePayload.email,
-                    nama: responsePayload.name
-                };
-        
-                const registrationResponse = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(registrationPayload)
-                });
-                
-                const registrationResult = await registrationResponse.json();
-        
-                if (!registrationResponse.ok || registrationResult.status !== 'sukses') {
-                    // Jika pendaftaran gagal, lempar error
-                    throw new Error(registrationResult.message || 'Gagal mendaftarkan email ke server.');
-                }
-        
-                // 4. Jika pendaftaran di server berhasil, lanjutkan ke langkah pembayaran
                 console.log("Email berhasil didaftarkan di server via Google Login.");
                 transitionToVerifiedState();
         
@@ -597,6 +574,7 @@
     </script>
 </body>
 </html>
+
 
 
 
