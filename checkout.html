@@ -181,7 +181,7 @@
         </div>
     </footer>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://accounts.google.com/gsi/client?onload=initializeGoogleSignIn" async defer></script>
     <script src="keranjang.js"></script>
     <script src="js/payment-methods.js"></script> 
     <script>
@@ -414,7 +414,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderCartSummary();
             renderPaymentMethods();
-            initializeGoogleSignIn();
         });
 
         sendTokenBtn.addEventListener('click', async () => {
@@ -559,4 +558,5 @@
     </script>
 </body>
 </html>
+
 
