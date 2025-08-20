@@ -325,6 +325,9 @@
             // Isi otomatis form
             fullNameInput.value = responsePayload.name;
             emailInput.value = responsePayload.email;
+
+            orderData.namaPembeli = responsePayload.name;
+            orderData.emailPembeli = responsePayload.email;
         
             // Atur tampilan ke status terverifikasi
             transitionToVerifiedState();
@@ -433,6 +436,12 @@
                 if (response.ok && result.status === 'sukses') {
                     userDetailsStep.disabled = true; 
                     sendTokenBtn.classList.add('hidden'); 
+
+                    if (googleLoginBtn.previousElementSibling) {
+                        googleLoginBtn.previousElementSibling.classList.add('hidden'); // Sembunyikan divider "Atau"
+                    }
+                    googleLoginBtn.classList.add('hidden');
+                    
                     tokenVerificationStep.classList.remove('hidden');
                     tokenFeedback.textContent = `OTP telah dikirim ke ${emailInput.value}`;
                     tokenFeedback.classList.add('text-blue-600');
@@ -543,6 +552,7 @@
     </script>
 </body>
 </html>
+
 
 
 
