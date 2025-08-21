@@ -12,6 +12,19 @@
         body { font-family: 'Poppins', sans-serif; background-color: #F9FAFB; color: #1F2937; }
         fieldset:disabled { opacity: 0.5; pointer-events: none; }
         button:disabled { cursor: not-allowed; }
+        .payment-options-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1rem; /* Padding horizontal untuk dropdown */
+            background-color: #F9FAFB; /* Warna latar belakang dropdown */
+            border-top: 1px solid #E5E7EB; /* Garis pemisah */
+        }
+        
+        .options-list-visible {
+            max-height: 500px; /* Atur ketinggian maksimum yang cukup */
+            padding: 1rem; /* Padding saat dropdown terbuka */
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -349,86 +362,71 @@
 
 
         function renderPaymentMethods() {
-            paymentOptionsContainer.innerHTML = ''; // Selalu kosongkan kontainer di awal
+            paymentOptionsContainer.innerHTML = ''; // Kosongkan kontainer
         
-            // Proses semua grup metode pembayaran dari PAYMENT_METHODS
+            let groupIndex = 0; // Untuk membuat ID unik
             for (const [groupName, groupDetails] of Object.entries(PAYMENT_METHODS)) {
+                groupIndex++;
+                const hasOptions = groupDetails.providers.length > 1;
+                const mainProvider = groupDetails.providers[0]; // Ambil provider pertama sebagai acuan
+                
+                const radioId = `payment-${mainProvider.code}`;
+                const dropdownContainerId = `options-list-${groupIndex}`;
+                const isDisabled = mainProvider.disabled;
         
-                // Cek apakah grup ini harus menjadi dropdown:
-                // 1. Punya lebih dari 1 pilihan
-                // 2. Namanya BUKAN "Transfer Bank" atau "QRIS"
-                const isDropdown = groupDetails.providers.length > 1 && 
-                                   groupName !== 'Transfer Bank' && 
-                                   groupName !== 'QRIS';
-        
-                if (isDropdown) {
-                    // JIKA IYA, RENDER SEBAGAI DROPDOWN
-                    
-                    // Buat ID unik untuk dropdown & radio button grup berdasarkan nama grup
-                    const groupCode = groupName.replace(/\s+/g, '_'); // Ganti spasi dengan underscore
-                    const radioId = `payment-group-${groupCode}`;
-                    const dropdownId = `dropdown-${groupCode}`;
-        
-                    // Buat radio button "tersembunyi" untuk grup ini
-                    paymentOptionsContainer.innerHTML += `
-                        <input type="radio" id="${radioId}" name="payment_method" value="${groupCode}" class="hidden peer">
-                    `;
-                    
-                    // Buat opsi untuk dropdown
-                    let optionsHTML = `<option value="" disabled selected>Pilih Opsi</option>`;
+                let optionsHTML = '';
+                if (hasOptions) {
+                    let selectOptions = `<option value="" disabled selected>Pilih Opsi</option>`;
                     groupDetails.providers.forEach(provider => {
-                        optionsHTML += `<option value="${provider.code}">${provider.name}</option>`;
+                        selectOptions += `<option value="${provider.code}">${provider.name}</option>`;
                     });
-        
-                    // Buat tampilan dropdown
-                    const dropdownHTML = `
-                        <div class="border rounded-lg p-4 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 cursor-pointer" onclick="document.getElementById('${radioId}').checked = true;">
-                            <div class="flex items-center justify-between">
-                                <label for="${dropdownId}" class="font-semibold text-gray-800">${groupName}</label>
-                                <select id="${dropdownId}" name="${groupCode}_option" class="payment-dropdown w-1/2 p-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    ${optionsHTML}
-                                </select>
-                            </div>
+                    
+                    optionsHTML = `
+                        <div id="${dropdownContainerId}" class="payment-options-list">
+                            <select class="payment-dropdown w-full p-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-indigo-500 focus:border-indigo-500">
+                                ${selectOptions}
+                            </select>
                         </div>
                     `;
-                    paymentOptionsContainer.innerHTML += dropdownHTML;
-        
-                } else {
-                    // JIKA TIDAK, RENDER SEPERTI BIASA (RADIO BUTTON)
-                    
-                    let providersHTML = '';
-                    groupDetails.providers.forEach(provider => {
-                        const id = `payment-${provider.code}`;
-                        const isChecked = provider.code === orderData.metodePembayaran ? 'checked' : '';
-                        const isDisabled = provider.disabled ? 'disabled' : '';
-                        const labelClasses = isDisabled ? 'cursor-not-allowed opacity-50' : 'has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer';
-                        
-                        providersHTML += `
-                            <label for="${id}" class="flex items-center p-4 border border-gray-300 rounded-lg ${labelClasses}">
-                                <input type="radio" id="${id}" name="payment_method" value="${provider.code}" class="h-4 w-4 text-indigo-600" ${isChecked} ${isDisabled}>
-                                <span class="ml-3 font-medium text-gray-800">${provider.name}</span>
-                            </label>
-                        `;
-                    });
-                    paymentOptionsContainer.innerHTML += `<div class="space-y-3">${providersHTML}</div>`;
                 }
+        
+                const itemHTML = `
+                    <div class="payment-group border rounded-lg overflow-hidden has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}">
+                        <label for="${radioId}" class="flex items-center p-4 cursor-pointer">
+                            <input type="radio" id="${radioId}" name="payment_method" value="${mainProvider.code}" 
+                                   class="h-4 w-4 text-indigo-600" ${isDisabled ? 'disabled' : ''}
+                                   data-has-options="${hasOptions}" data-target="${dropdownContainerId}">
+                            <span class="ml-3 font-medium text-gray-800">${groupName}</span>
+                        </label>
+                        ${optionsHTML}
+                    </div>
+                `;
+                paymentOptionsContainer.innerHTML += itemHTML;
             }
         
-            // Tambahkan event listener universal untuk semua radio button dan dropdown
-            document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
-                radio.addEventListener('change', (event) => {
-                    // Jika yang dipilih bukan grup dropdown, langsung simpan kodenya
-                    if (!event.target.value.includes('_')) {
-                        orderData.metodePembayaran = event.target.value;
-                    }
-                });
-            });
+            // Event listener pintar untuk menangani semua klik
+            paymentOptionsContainer.addEventListener('change', function(event) {
+                const selectedRadio = event.target;
         
-            document.querySelectorAll('.payment-dropdown').forEach(dropdown => {
-                dropdown.addEventListener('change', (event) => {
-                    // Saat dropdown dipilih, simpan kodenya
-                    orderData.metodePembayaran = event.target.value;
-                });
+                if (selectedRadio.name === 'payment_method') {
+                    // Tutup semua dropdown terlebih dahulu
+                    document.querySelectorAll('.payment-options-list').forEach(list => {
+                        list.classList.remove('options-list-visible');
+                    });
+        
+                    // Jika yang dipilih punya opsi, buka dropdownnya
+                    if (selectedRadio.dataset.hasOptions === 'true') {
+                        const targetId = selectedRadio.dataset.target;
+                        document.getElementById(targetId).classList.add('options-list-visible');
+                        orderData.metodePembayaran = ''; // Reset, tunggu pilihan dari dropdown
+                    } else {
+                        orderData.metodePembayaran = selectedRadio.value;
+                    }
+                }
+                
+                if (selectedRadio.classList.contains('payment-dropdown')) {
+                     orderData.metodePembayaran = selectedRadio.value;
+                }
             });
         }
 
@@ -616,5 +614,6 @@
     </script>
 </body>
 </html>
+
 
 
