@@ -348,50 +348,61 @@
         }
 
 
-        // GANTI SELURUH FUNGSI LAMA ANDA DENGAN VERSI FINAL INI
         function renderPaymentMethods() {
-            paymentOptionsContainer.innerHTML = '';
+            paymentOptionsContainer.innerHTML = ''; // Selalu kosongkan kontainer di awal
         
+            // Proses semua grup metode pembayaran dari PAYMENT_METHODS
             for (const [groupName, groupDetails] of Object.entries(PAYMENT_METHODS)) {
-                const isDropdown = groupDetails.providers.length > 1 &&
-                                   groupName !== 'Transfer Bank' &&
+        
+                // Cek apakah grup ini harus menjadi dropdown:
+                // 1. Punya lebih dari 1 pilihan
+                // 2. Namanya BUKAN "Transfer Bank" atau "QRIS"
+                const isDropdown = groupDetails.providers.length > 1 && 
+                                   groupName !== 'Transfer Bank' && 
                                    groupName !== 'QRIS';
         
                 if (isDropdown) {
-                    const groupCode = groupName.replace(/\s+/g, '_');
+                    // JIKA IYA, RENDER SEBAGAI DROPDOWN
+                    
+                    // Buat ID unik untuk dropdown & radio button grup berdasarkan nama grup
+                    const groupCode = groupName.replace(/\s+/g, '_'); // Ganti spasi dengan underscore
                     const radioId = `payment-group-${groupCode}`;
                     const dropdownId = `dropdown-${groupCode}`;
         
+                    // Buat radio button "tersembunyi" untuk grup ini
                     paymentOptionsContainer.innerHTML += `
                         <input type="radio" id="${radioId}" name="payment_method" value="${groupCode}" class="hidden peer">
                     `;
-        
-                    let optionsHTML = `<option value="" selected>Pilih Opsi</option>`; // Default "Pilih Opsi"
+                    
+                    // Buat opsi untuk dropdown
+                    let optionsHTML = `<option value="" disabled selected>Pilih Opsi</option>`;
                     groupDetails.providers.forEach(provider => {
                         optionsHTML += `<option value="${provider.code}">${provider.name}</option>`;
                     });
         
-                    // Tambahkan atribut 'disabled' pada <select> secara default
+                    // Buat tampilan dropdown
                     const dropdownHTML = `
-                        <label for="${radioId}" class="block border rounded-lg p-4 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 cursor-pointer has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed">
+                        <div class="border rounded-lg p-4 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 cursor-pointer" onclick="document.getElementById('${radioId}').checked = true;">
                             <div class="flex items-center justify-between">
-                                <span class="font-semibold text-gray-800">${groupName}</span>
-                                <select id="${dropdownId}" name="${groupCode}_option" class="payment-dropdown w-1/2 p-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100" disabled>
+                                <label for="${dropdownId}" class="font-semibold text-gray-800">${groupName}</label>
+                                <select id="${dropdownId}" name="${groupCode}_option" class="payment-dropdown w-1/2 p-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-indigo-500 focus:border-indigo-500">
                                     ${optionsHTML}
                                 </select>
                             </div>
-                        </label>
+                        </div>
                     `;
                     paymentOptionsContainer.innerHTML += dropdownHTML;
         
                 } else {
+                    // JIKA TIDAK, RENDER SEPERTI BIASA (RADIO BUTTON)
+                    
                     let providersHTML = '';
                     groupDetails.providers.forEach(provider => {
                         const id = `payment-${provider.code}`;
                         const isChecked = provider.code === orderData.metodePembayaran ? 'checked' : '';
                         const isDisabled = provider.disabled ? 'disabled' : '';
                         const labelClasses = isDisabled ? 'cursor-not-allowed opacity-50' : 'has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 cursor-pointer';
-        
+                        
                         providersHTML += `
                             <label for="${id}" class="flex items-center p-4 border border-gray-300 rounded-lg ${labelClasses}">
                                 <input type="radio" id="${id}" name="payment_method" value="${provider.code}" class="h-4 w-4 text-indigo-600" ${isChecked} ${isDisabled}>
@@ -403,33 +414,19 @@
                 }
             }
         
-            // Event listener yang sudah disempurnakan
+            // Tambahkan event listener universal untuk semua radio button dan dropdown
             document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
                 radio.addEventListener('change', (event) => {
-                    const selectedValue = event.target.value;
-        
-                    // Loop ke semua dropdown untuk menonaktifkannya
-                    document.querySelectorAll('.payment-dropdown').forEach(dropdown => {
-                        dropdown.disabled = true;
-                        dropdown.value = ""; // Reset pilihan dropdown
-                    });
-                    
-                    // Jika yang dipilih adalah grup dropdown, aktifkan dropdown yang sesuai
-                    if (selectedValue.includes('_')) {
-                        const dropdownId = `dropdown-${selectedValue}`;
-                        const targetDropdown = document.getElementById(dropdownId);
-                        if (targetDropdown) {
-                            targetDropdown.disabled = false;
-                        }
-                        orderData.metodePembayaran = ''; // Reset metode pembayaran sampai bank dipilih
-                    } else {
-                        orderData.metodePembayaran = selectedValue;
+                    // Jika yang dipilih bukan grup dropdown, langsung simpan kodenya
+                    if (!event.target.value.includes('_')) {
+                        orderData.metodePembayaran = event.target.value;
                     }
                 });
             });
         
             document.querySelectorAll('.payment-dropdown').forEach(dropdown => {
                 dropdown.addEventListener('change', (event) => {
+                    // Saat dropdown dipilih, simpan kodenya
                     orderData.metodePembayaran = event.target.value;
                 });
             });
@@ -619,7 +616,5 @@
     </script>
 </body>
 </html>
-
-
 
 
