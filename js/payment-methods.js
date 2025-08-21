@@ -17,7 +17,7 @@ const PAYMENT_METHODS = {
     ]
   },
   "Virtual Account": {
-    isDirect: false,
+    isDirect: true,
     providers: [
       { name: "Bank Mandiri", code: "VA_MANDIRI_M2", disabled: false }, // Sesuaikan kode 'xx' jika perlu
       { name: "Bank BNI", code: "VA_BNI_I1", disabled: false },
@@ -29,11 +29,12 @@ const PAYMENT_METHODS = {
     ]
   },
   "E-Wallet": {
-    isDirect: false,
+    isDirect: true,
     providers: [
       { name: "ShopeePay (segera hadir)", code: "EWALLET_ShopeePay_SA", disabled: true },
       { name: "OVO (segera hadir)", code: "EWALLET_OVO_OV", disabled: true }, // Sesuaikan kode 'zz' jika perlu
     ]
   }
 };
+
 
