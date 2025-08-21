@@ -331,6 +331,7 @@
             `;
         }
 
+// GANTI FUNGSI LAMA DENGAN YANG INI
         async function fetchAndRenderFeaturedProducts() {
             try {
                 const response = await fetch(API_URL, {
@@ -339,19 +340,34 @@
                     body: JSON.stringify({ kontrol: 'proteksi', action: 'getfeaturedproduk' })
                 });
                 const result = await response.json();
-
+        
                 if (response.ok && result.status === 'sukses') {
                     loadingMessage.style.display = 'none';
-                    const categories = result.data;
-                    const categoryOrder = ['tools', 'ebook', 'tutorial', 'aset']; 
-
-                    categoryOrder.forEach(categoryKey => {
-                        if (categories[categoryKey] && categories[categoryKey].length > 0) {
-                            featuredContainer.innerHTML += createCategorySection(categoryKey, categories[categoryKey]);
-                        }
-                    });
-                    
-                    reinitializeEventListeners();
+                    const products = result.data; // Ini sekarang adalah array berisi 4 produk
+        
+                    if (products && products.length > 0) {
+                        // Buat kontainer grid baru untuk 4 produk
+                        let productCardsHTML = '';
+                        products.forEach(product => {
+                            productCardsHTML += createProductCard(product);
+                        });
+                        
+                        // Ganti isi kontainer utama dengan grid baru
+                        featuredContainer.innerHTML = `
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                                ${productCardsHTML}
+                            </div>
+                            <div class="text-center mt-16">
+                                 <a href="view.html" class="bg-gradient-to-r from-indigo-600 to-blue-500 hover:opacity-90 text-white font-bold py-4 px-10 rounded-full text-xl transition-all transform hover:scale-105 inline-block shadow-lg shadow-blue-500/30">
+                                    Lihat Semua Produk Lainnya
+                                 </a>
+                            </div>
+                        `;
+        
+                        reinitializeEventListeners();
+                    } else {
+                         featuredContainer.innerHTML = '<p class="text-center text-gray-500">Produk unggulan belum tersedia.</p>';
+                    }
                 } else {
                     throw new Error(result.message || 'Gagal memuat produk.');
                 }
@@ -424,5 +440,6 @@
     </script>
 </body>
 </html>
+
 
 
