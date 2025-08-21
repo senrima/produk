@@ -269,7 +269,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderCartSummary();
             renderPaymentMethods();
-            initializeGoogleSignIn();
+       //     initializeGoogleSignIn();
         });
 
         sendTokenBtn.addEventListener('click', async () => {
@@ -410,4 +410,5 @@
         });
         
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
+
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
