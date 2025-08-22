@@ -191,7 +191,7 @@
                 }
         
                 const itemHTML = `
-                    <div class="payment-group border rounded-lg overflow-hidden has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}">
+                    <div class="payment-group border rounded-lg overflow-hidden ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}">
                         <label for="${radioId}" class="flex items-center p-4 cursor-pointer">
                             <input type="radio" id="${radioId}" name="payment_method" value="${mainProvider.code}" 
                                    class="h-4 w-4 text-indigo-600" ${isDisabled ? 'disabled' : ''}
@@ -414,5 +414,6 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
