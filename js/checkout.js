@@ -150,15 +150,15 @@
             transitionToVerifiedState();
         }
         
-        function initializeGoogleSignIn() {
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: handleCredentialResponse
-            });
-            googleLoginBtn.addEventListener('click', () => {
-                google.accounts.id.prompt(); // Tampilkan popup login saat tombol diklik
-            });
-        }
+  //      function initializeGoogleSignIn() {
+  //          google.accounts.id.initialize({
+  //              client_id: GOOGLE_CLIENT_ID,
+  //              callback: handleCredentialResponse
+  //          });
+  //          googleLoginBtn.addEventListener('click', () => {
+  //              google.accounts.id.prompt(); // Tampilkan popup login saat tombol diklik
+  //          });
+  //      }
 
 
         function renderPaymentMethods() {
@@ -435,4 +435,5 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
