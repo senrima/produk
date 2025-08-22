@@ -7,6 +7,26 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+        // Fungsi ini akan dipanggil oleh Google Sign-In setelah skripnya siap
+        function onGoogleLibraryLoad() {
+            // Cek apakah fungsi initializeGoogleSignIn sudah ada di window
+            // Ini untuk memastikan checkout.js sudah dimuat
+            if (window.initializeGoogleSignIn) {
+                window.initializeGoogleSignIn();
+            } else {
+                // Jika checkout.js belum dimuat, tunggu event DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (window.initializeGoogleSignIn) {
+                        window.initializeGoogleSignIn();
+                    }
+                });
+            }
+        }
+    </script>
     
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #F9FAFB; color: #1F2937; }
@@ -194,13 +214,15 @@
         </div>
     </footer>
 
-    <script src="https://accounts.google.com/gsi/client?onload=initializeGoogleSignIn" async defer></script>
     <script src="js/keranjang.js"></script>
     <script src="js/payment-methods.js"></script>  
     <script src="js/checkout.js"></script>
 
+    <script async defer src="https://accounts.google.com/gsi/client?onload=onGoogleLibraryLoad"></script>
+
 </body>
 </html>
+
 
 
 
