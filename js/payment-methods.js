@@ -13,7 +13,7 @@ const PAYMENT_METHODS = {
   "QRIS": {
     isDirect: true,
     providers: [
-      { name: "QRIS (segera hadir)", code: "QR_QRISShopeePay_SP", disabled: true }
+      { name: "QRIS", code: "QR_Nusapay_SQ", disabled: false }
     ]
   },
   "Virtual Account": {
@@ -42,6 +42,7 @@ const PAYMENT_METHODS = {
     ]
   }
 };
+
 
 
 
