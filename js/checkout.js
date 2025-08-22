@@ -150,15 +150,15 @@
             transitionToVerifiedState();
         }
         
- //       function initializeGoogleSignIn() {
- //           google.accounts.id.initialize({
- //               client_id: GOOGLE_CLIENT_ID,
- //               callback: handleCredentialResponse
- //           });
- //           googleLoginBtn.addEventListener('click', () => {
- //               google.accounts.id.prompt(); // Tampilkan popup login saat tombol diklik
- //           });
- //       }
+        function initializeGoogleSignIn() {
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse
+            });
+            googleLoginBtn.addEventListener('click', () => {
+                google.accounts.id.prompt(); // Tampilkan popup login saat tombol diklik
+            });
+        }
 
 
         function renderPaymentMethods() {
@@ -267,30 +267,9 @@
         // -- EVENT LISTENERS
         // ---------------------------------------------------------------
         document.addEventListener('DOMContentLoaded', () => {
-
-            window.initializeGoogleSignIn = function() {
-                const googleLoginBtn = document.getElementById('googleLoginBtn');
-                const GOOGLE_CLIENT_ID = '140122260876-rea6sfsmcd32acgie6ko7hrr2rj65q6v.apps.googleusercontent.com';
-                
-                if (!googleLoginBtn) {
-                    console.log("Tombol login Google belum siap, menunggu...");
-                    return;
-                }
-        
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: handleCredentialResponse // fungsi ini juga ada di dalam scope DOMContentLoaded
-                });
-        
-                googleLoginBtn.addEventListener('click', () => {
-                    google.accounts.id.prompt();
-                });
-            }
-
-                
             renderCartSummary();
             renderPaymentMethods();
-       //     initializeGoogleSignIn();
+            initializeGoogleSignIn();
         });
 
 
@@ -435,4 +414,5 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
