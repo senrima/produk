@@ -1,44 +1,80 @@
-        // ===============================================================
-        // == JAVASCRIPT LENGKAP UNTUK HALAMAN CHECKOUT (VERSI BARU) ==
-        // ===============================================================
+// ===============================================================
+// == JAVASCRIPT CHECKOUT DENGAN STRUKTUR ANTI GAGAL (FINAL) ==
+// ===============================================================
 
-        // ---------------------------------------------------------------
-        // -- PENGATURAN & SELEKSI DOM
-        // ---------------------------------------------------------------
-        const API_URL = 'https://api.senrima.web.id';
-        const paymentOptionsContainer = document.getElementById('payment-options-container');
-        const cartItemsSummary = document.getElementById('cart-items-summary');
-        const userDetailsStep = document.getElementById('user-details-step');
-        const tokenVerificationStep = document.getElementById('token-verification-step');
-        const verificationSuccessMessage = document.getElementById('verification-success-message');
-        const paymentMethodStep = document.getElementById('payment-method-step');
-        const fullNameInput = document.getElementById('full_name');
-        const emailInput = document.getElementById('email');
-        const sendTokenBtn = document.getElementById('send-token-btn');
-        const tokenInput = document.getElementById('token');
-        const verifyTokenBtn = document.getElementById('verify-token-btn');
-        const tokenFeedback = document.getElementById('token-feedback');
-        const payNowBtn = document.getElementById('pay-now-btn');
-        const applyCouponBtn = document.getElementById('apply-coupon-btn');
-        const couponCodeInput = document.getElementById('coupon_code');
-        const couponFeedback = document.getElementById('coupon-feedback');
-        const subtotalEl = document.getElementById('subtotal-amount');
-        const discountEl = document.getElementById('discount-amount');
-        const serviceFeeEl = document.getElementById('service-fee');
-        const totalEl = document.getElementById('total-amount');
+// --- Variabel Penanda (Flags) ---
+let isDomReady = false;
+let isGsiReady = false;
 
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const GOOGLE_CLIENT_ID = '140122260876-rea6sfsmcd32acgie6ko7hrr2rj65q6v.apps.googleusercontent.com';
-        
-        var orderData = {
-            items: [], kodeKupon: '', diskon: 0, biayaLayanan: 5000,
-            totalPembayaran: 0, namaPembeli: '', emailPembeli: '', 
-            metodePembayaran: 'TRANSFER' // Default
-        };
+/**
+ * Callback yang dipanggil oleh skrip Google setelah selesai dimuat.
+ */
+function googleScriptLoaded() {
+    isGsiReady = true;
+    tryStartApp();
+}
+
+/**
+ * Event listener yang dijalankan setelah halaman HTML selesai dimuat.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    isDomReady = true;
+    tryStartApp();
+});
+
+/**
+ * "Gerbang Utama" yang hanya berjalan jika DOM dan Google Script sudah siap.
+ */
+function tryStartApp() {
+    if (isDomReady && isGsiReady) {
+        initializeApp();
+    }
+}
+
+
+/**
+ * Fungsi inisialisasi utama yang berisi semua logika aplikasi.
+ */
+function initializeApp() {
+    console.log("DOM dan Google GSI siap. Menjalankan aplikasi...");
+
+    // ---------------------------------------------------------------
+    // -- SELEKSI DOM & STATE
+    // ---------------------------------------------------------------
+    const API_URL = 'https://api.senrima.web.id';
+    const paymentOptionsContainer = document.getElementById('payment-options-container');
+    const cartItemsSummary = document.getElementById('cart-items-summary');
+    const userDetailsStep = document.getElementById('user-details-step');
+    const tokenVerificationStep = document.getElementById('token-verification-step');
+    const verificationSuccessMessage = document.getElementById('verification-success-message');
+    const paymentMethodStep = document.getElementById('payment-method-step');
+    const fullNameInput = document.getElementById('full_name');
+    const emailInput = document.getElementById('email');
+    const sendTokenBtn = document.getElementById('send-token-btn');
+    const tokenInput = document.getElementById('token');
+    const verifyTokenBtn = document.getElementById('verify-token-btn');
+    const tokenFeedback = document.getElementById('token-feedback');
+    const payNowBtn = document.getElementById('pay-now-btn');
+    const applyCouponBtn = document.getElementById('apply-coupon-btn');
+    const couponCodeInput = document.getElementById('coupon_code');
+    const couponFeedback = document.getElementById('coupon-feedback');
+    const subtotalEl = document.getElementById('subtotal-amount');
+    const discountEl = document.getElementById('discount-amount');
+    const serviceFeeEl = document.getElementById('service-fee');
+    const totalEl = document.getElementById('total-amount');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    const GOOGLE_CLIENT_ID = '140122260876-rea6sfsmcd32acgie6ko7hrr2rj65q6v.apps.googleusercontent.com';
+
+    var orderData = {
+        items: [], kodeKupon: '', diskon: 0, biayaLayanan: 5000,
+        totalPembayaran: 0, namaPembeli: '', emailPembeli: '',
+        metodePembayaran: 'TRANSFER', verifikasiVia: 'otp'
+    };
 
         // ---------------------------------------------------------------
         // -- FUNGSI-FUNGSI UTAMA
         // ---------------------------------------------------------------
+        
         const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         
         const updateSummary = () => {
@@ -150,16 +186,6 @@
             transitionToVerifiedState();
         }
         
-  //      function initializeGoogleSignIn() {
-  //          google.accounts.id.initialize({
-  //              client_id: GOOGLE_CLIENT_ID,
-  //              callback: handleCredentialResponse
-  //          });
-  //          googleLoginBtn.addEventListener('click', () => {
-  //              google.accounts.id.prompt(); // Tampilkan popup login saat tombol diklik
-  //          });
-  //      }
-
 
         function renderPaymentMethods() {
             paymentOptionsContainer.innerHTML = ''; // Kosongkan kontainer
@@ -203,31 +229,6 @@
                 `;
                 paymentOptionsContainer.innerHTML += itemHTML;
             }
-        
-            // Event listener pintar untuk menangani semua klik
-            paymentOptionsContainer.addEventListener('change', function(event) {
-                const selectedRadio = event.target;
-        
-                if (selectedRadio.name === 'payment_method') {
-                    // Tutup semua dropdown terlebih dahulu
-                    document.querySelectorAll('.payment-options-list').forEach(list => {
-                        list.classList.remove('options-list-visible');
-                    });
-        
-                    // Jika yang dipilih punya opsi, buka dropdownnya
-                    if (selectedRadio.dataset.hasOptions === 'true') {
-                        const targetId = selectedRadio.dataset.target;
-                        document.getElementById(targetId).classList.add('options-list-visible');
-                        orderData.metodePembayaran = ''; // Reset, tunggu pilihan dari dropdown
-                    } else {
-                        orderData.metodePembayaran = selectedRadio.value;
-                    }
-                }
-                
-                if (selectedRadio.classList.contains('payment-dropdown')) {
-                     orderData.metodePembayaran = selectedRadio.value;
-                }
-            });
         }
 
         async function handleFinalPayment(event) {
@@ -266,33 +267,16 @@
         // ---------------------------------------------------------------
         // -- EVENT LISTENERS
         // ---------------------------------------------------------------
-        document.addEventListener('DOMContentLoaded', () => {
 
-            window.initializeGoogleSignIn = function() {
-                const googleLoginBtn = document.getElementById('googleLoginBtn');
-                const GOOGLE_CLIENT_ID = '140122260876-rea6sfsmcd32acgie6ko7hrr2rj65q6v.apps.googleusercontent.com';
-                
-                if (!googleLoginBtn) {
-                    console.log("Tombol login Google belum siap, menunggu...");
-                    return;
-                }
-        
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: handleCredentialResponse // fungsi ini juga ada di dalam scope DOMContentLoaded
-                });
-        
-                googleLoginBtn.addEventListener('click', () => {
-                    google.accounts.id.prompt();
-                });
-            }
-
-                
-            renderCartSummary();
-            renderPaymentMethods();
-       //     initializeGoogleSignIn();
+            // Inisialisasi Google Sign-In
+        google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse
         });
-
+        
+        googleLoginBtn.addEventListener('click', () => {
+                google.accounts.id.prompt();
+        });
 
 
         sendTokenBtn.addEventListener('click', async () => {
@@ -434,6 +418,37 @@
         
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
-        // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+        paymentOptionsContainer.addEventListener('change', function(event) {
+                const selectedRadio = event.target;
+        
+                if (selectedRadio.name === 'payment_method') {
+                    // Tutup semua dropdown terlebih dahulu
+                    document.querySelectorAll('.payment-options-list').forEach(list => {
+                        list.classList.remove('options-list-visible');
+                    });
+        
+                    // Jika yang dipilih punya opsi, buka dropdownnya
+                    if (selectedRadio.dataset.hasOptions === 'true') {
+                        const targetId = selectedRadio.dataset.target;
+                        document.getElementById(targetId).classList.add('options-list-visible');
+                        orderData.metodePembayaran = ''; // Reset, tunggu pilihan dari dropdown
+                    } else {
+                        orderData.metodePembayaran = selectedRadio.value;
+                    }
+                }
+                
+                if (selectedRadio.classList.contains('payment-dropdown')) {
+                     orderData.metodePembayaran = selectedRadio.value;
+                }
+        });
+
+
+        renderCartSummary();
+        renderPaymentMethods();
+    
+        console.log("Aplikasi Checkout berhasil diinisialisasi.");
+}
+        
+
 
 
