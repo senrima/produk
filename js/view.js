@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------------------------
     // -- SELEKSI ELEMEN DOM
     // ---------------------------------------------------------------
-    const API_URL = 'https://api.senrima.web.id';
+    const API_URL = 'https://api.s-tools.id';
     const productGrid = document.getElementById('product-grid');
     const loadingMessage = document.getElementById('loading-message');
     const searchInput = document.getElementById('search-input');
@@ -202,3 +202,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Panggil fungsi inisialisasi baru saat halaman dimuat
     initializePage();
 });
+
