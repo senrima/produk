@@ -152,8 +152,18 @@
                 client_id: GOOGLE_CLIENT_ID,
                 callback: handleCredentialResponse
             });
+        
+            // Event listener untuk tombol login Google
             googleLoginBtn.addEventListener('click', () => {
-                google.accounts.id.prompt(); // Tampilkan popup login saat tombol diklik
+                // 1. Langsung non-aktifkan tombol untuk mencegah klik ganda
+                googleLoginBtn.disabled = true;
+        
+                // 2. (Opsional tapi direkomendasikan) Ubah teks dan tampilan tombol
+                googleLoginBtn.textContent = 'Memproses...';
+                googleLoginBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        
+                // 3. Tampilkan popup login Google
+                google.accounts.id.prompt(); 
             });
         }
 
@@ -423,6 +433,7 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
 
