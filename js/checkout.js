@@ -82,7 +82,7 @@
             const cart = getCart();
             if (!cart || cart.length === 0) {
                 alert('Keranjang Anda kosong. Anda akan diarahkan kembali.');
-                window.location.href = 'view.html';
+                window.location.href = 'index.html';
                 return;
             }
             orderData.items = cart;
@@ -423,6 +423,7 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
 
