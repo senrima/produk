@@ -396,10 +396,8 @@
             var payload = {
                 kontrol: 'proteksi',
                 action: 'cekkupon',
-                payload: { // Bungkus data spesifik di dalam 'payload'
-                    kodeKupon: code,
-                    items: orderData.items 
-                }
+                kodeKupon: code,
+                items: orderData.items 
             };
 
             try {
@@ -446,6 +444,7 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
 
