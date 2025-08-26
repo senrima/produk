@@ -6,6 +6,7 @@
         // -- PENGATURAN & SELEKSI DOM
         // ---------------------------------------------------------------
         const API_URL = 'https://api.senrima.web.id';
+        const INVOICE_API_URL = 'https://stools-payment.senrima-ms.workers.dev';
         const paymentOptionsContainer = document.getElementById('payment-options-container');
         const cartItemsSummary = document.getElementById('cart-items-summary');
         const userDetailsStep = document.getElementById('user-details-step');
@@ -233,34 +234,46 @@
         async function handleFinalPayment(event) {
             event.preventDefault();
             payNowBtn.disabled = true;
-            payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...`;
+            payNowBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" ... ></svg>Memproses...`;
+        
+            // Ambil data nama dan email jika belum dari Google Login
             if (orderData.verifikasiVia !== 'google') {
-                // Jika tidak, baru ambil dari form
                 orderData.namaPembeli = fullNameInput.value;
                 orderData.emailPembeli = emailInput.value;
             }
-            const payload = { kontrol: 'proteksi', action: 'buatinvoice', data: orderData };
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
+        
+            // Minta token reCAPTCHA baru sebelum mengirim
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6Lffu7IrAAAAAN2uSiFZrk8ft2mLqpq9oH2-1GFD', {action: 'submit_payment'}).then(async function(token) {
+        
+                    // Gabungkan data pesanan dengan token reCAPTCHA
+                    const payload = { ...orderData, recaptchaToken: token };
+        
+                    try {
+                        // PANGGIL API BARU YANG DI-PROTEKSI RECAPTCHA
+                        const response = await fetch(INVOICE_API_URL, { 
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const result = await response.json();
+        
+                        if (response.ok && (result.status === 'sukses' || result.status === 'success') && result.paymentLink) {
+                            clearCart();
+                            window.location.href = result.paymentLink;
+                        } else {
+                            alert(result.message || 'Gagal membuat invoice. Silakan coba lagi.');
+                            payNowBtn.disabled = false;
+                            payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
+                        }
+                    } catch (error) {
+                        console.error("Gagal memproses pembayaran:", error);
+                        alert('Terjadi kesalahan. Silakan coba beberapa saat lagi.');
+                        payNowBtn.disabled = false;
+                        payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
+                    }
                 });
-                const result = await response.json();
-                if (response.ok && (result.status === 'sukses' || result.status === 'success') && result.paymentLink) {
-                    clearCart();
-                    window.location.href = result.paymentLink;
-                } else {
-                    alert(result.message || 'Gagal membuat invoice. Silakan coba lagi.');
-                    payNowBtn.disabled = false;
-                    payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
-                }
-            } catch (error) {
-                console.error("Gagal memproses pembayaran:", error);
-                alert('Terjadi kesalahan. Silakan coba beberapa saat lagi.');
-                payNowBtn.disabled = false;
-                payNowBtn.textContent = orderData.totalPembayaran <= 0 ? 'Klaim & Selesaikan' : 'Bayar Sekarang';
-            }
+            });
         };
         
         // ---------------------------------------------------------------
@@ -414,6 +427,7 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
 
