@@ -397,7 +397,7 @@
                 kontrol: 'proteksi',
                 action: 'cekkupon',
                 kodeKupon: code,
-                items: cart
+                items: orderData.items
             };
 
             try {
@@ -409,8 +409,18 @@
                 var result = await response.json();
 
                 if (response.ok && result.status === 'sukses') {
-                    var coupon = result.data;
-                    orderData.diskon = (coupon.tipe === 'fixed') ? parseFloat(coupon.nilai) : orderData.items.reduce((sum, item) => sum + item.price, 0) * parseFloat(coupon.nilai);
+                    const coupon = result.data;
+                    const subtotal = orderData.items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+        
+                    // ▼▼▼ LOGIKA UTAMA ADA DI SINI ▼▼▼
+                    if (coupon.tipe === 'percentage') {
+                        // Ambil nilai (misal: 20), bagi dengan 100 untuk dapat 0.20
+                        orderData.diskon = subtotal * (parseFloat(coupon.nilai) / 100);
+                    } else { // Untuk tipe 'fixed'
+                        orderData.diskon = parseFloat(coupon.nilai);
+                    }
+                    // ▲▲▲ AKHIR DARI LOGIKA UTAMA ▲▲▲
+                    
                     orderData.kodeKupon = code;
                     couponFeedback.textContent = `Kupon "${code}" berhasil diterapkan!`;
                     couponFeedback.classList.add('text-green-600');
@@ -434,6 +444,7 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
 
