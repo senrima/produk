@@ -396,14 +396,16 @@
             var payload = {
                 kontrol: 'proteksi',
                 action: 'cekkupon',
-                kodeKupon: code,
-                items: orderData.items
+                payload: { // Bungkus data spesifik di dalam 'payload'
+                    kodeKupon: code,
+                    items: orderData.items 
+                }
             };
 
             try {
                 var response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 var result = await response.json();
@@ -444,6 +446,7 @@
         document.getElementById('payment-form').addEventListener('submit', handleFinalPayment);
 
         // (Semua event listener lain untuk sendTokenBtn, verifyTokenBtn, applyCouponBtn, dan form submit tetap sama)
+
 
 
 
