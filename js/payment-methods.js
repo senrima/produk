@@ -7,7 +7,7 @@ const PAYMENT_METHODS = {
   "Transfer": {
     isDirect: true,
     providers: [
-      { name: "Transfer Bank", code: "TRANSFER" }
+      { name: "Transfer Bank", code: "TRANSFER", disabled: true }
     ]
   },
   "QRIS": {
@@ -42,6 +42,7 @@ const PAYMENT_METHODS = {
     ]
   }
 };
+
 
 
 
