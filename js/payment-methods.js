@@ -33,21 +33,22 @@ const PAYMENT_METHODS = {
       { name: "ATM Bersama", code: "VA_ATMBersama_A1", disabled: false },
     ]
   },
-  "Retail": {
+    "E-Wallet >> ShopeePay": {
+    isDirect: true,
+    providers: [
+      { name: "ShopeePay", code: "Wallet_ShepeePay_SA", disabled: false },
+    ]
+  },
+    "Retail": {
     isDirect: false,
     providers: [
       { name: "Alfamart", code: "Retail_Alfamart_FT", disabled: false },
       { name: "Pos", code: "Retail_Pos_FT", disabled: false },
       { name: "Pegadaian", code: "Retail_Pegadaian_FT", disabled: false },
     ]
-  },
-    "E-Wallet >> ShopeePay": {
-    isDirect: false,
-    providers: [
-      { name: "ShopeePay", code: "Wallet_ShepeePay_SA", disabled: false },
-    ]
   }
 };
+
 
 
 
