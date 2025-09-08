@@ -13,7 +13,7 @@ const PAYMENT_METHODS = {
   "QRIS": {
     isDirect: true,
     providers: [
-      { name: "QRIS", code: "QR_Nusapay_SQ", disabled: false }
+      { name: "QRIS", code: "QR_ShoppePay_SP", disabled: false }
     ]
   },
   "Virtual Account": {
@@ -40,8 +40,15 @@ const PAYMENT_METHODS = {
       { name: "Pos", code: "Retail_Pos_FT", disabled: false },
       { name: "Pegadaian", code: "Retail_Pegadaian_FT", disabled: false },
     ]
+  },
+    "E-Wallet": {
+    isDirect: false,
+    providers: [
+      { name: "ShopeePay", code: "Wallet_ShepeePay_SA", disabled: false },
+    ]
   }
 };
+
 
 
 
