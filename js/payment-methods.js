@@ -45,9 +45,12 @@ const PAYMENT_METHODS = {
     isDirect: false,
     providers: [
       { name: "ShopeePay", code: "Wallet_ShepeePay_SA", disabled: false },
+      { name: "OVO", code: "Wallet_OVO_OV", disabled: true },
+      { name: "DANA", code: "Wallet_DANA_DA", disabled: true },
     ]
   }
 };
+
 
 
 
