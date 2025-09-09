@@ -13,7 +13,7 @@ const PAYMENT_METHODS = {
   "QRIS": {
     isDirect: true,
     providers: [
-      { name: "QRIS", code: "QR_ShoppePay_SP", disabled: false }
+      { name: "QRIS", code: "QR_ShoppeQRIS_SP", disabled: false }
     ]
   },
   "Virtual Account": {
@@ -48,6 +48,7 @@ const PAYMENT_METHODS = {
     ]
   }
 };
+
 
 
 
