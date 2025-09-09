@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapatkan Voucher TikTok - S-Tools ID</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style> 
+        body { font-family: 'Poppins', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50" x-data="redeemApp()">
+    
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <img class="h-8 w-auto" src="https://s-tools.id/aset/stools_logo.png" alt="S-Tools ID Logo">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="max-w-xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Dapatkan Kode Klaim</h1>
+            <p class="mt-4 text-lg leading-6 text-gray-500">Masukkan URL video TikTok dan alamat email Anda untuk mendapatkan kode klaim unik.</p>
+
+            <div class="mt-8 w-full">
+                <div class="space-y-6">
+                    <div>
+                        <input x-model="tiktokUrl" type="url" class="block w-full rounded-md border-gray-300 p-4 text-center shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Tempel URL VT TikTok di sini">
+                    </div>
+                    <div>
+                        <input x-model="email" type="email" class="block w-full rounded-md border-gray-300 p-4 text-center shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Masukkan alamat email Anda">
+                    </div>
+                    <div>
+                        <button @click="generateClaimCode()" :disabled="isLoading" :class="{'opacity-50 cursor-not-allowed': isLoading}" class="w-full inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700">
+                            <span x-show="isLoading" class="flex items-center">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V4a10 10 0 00-10 10h2z"></path></svg>
+                                Memproses...
+                            </span>
+                            <span x-show="!isLoading">Dapatkan Kode</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="message" x-cloak class="mt-6 p-4 rounded-md border-l-4" :class="status === 'sukses' ? 'bg-green-50 border-green-400 text-green-800' : 'bg-red-50 border-red-400 text-red-800'" x-transition>
+                <p class="font-medium" x-text="message"></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_ENDPOINT = "https://api.s-tools.id";
+
+        function redeemApp() {
+            return {
+                tiktokUrl: '',
+                email: '',
+                isLoading: false,
+                status: 'idle', // 'idle', 'sukses', 'error'
+                message: '',
+
+                async generateClaimCode() { // Nama fungsi diubah
+                    if (!this.tiktokUrl || !this.email) {
+                        this.status = 'error';
+                        this.message = 'URL TikTok dan Email wajib diisi.';
+                        return;
+                    }
+
+                    let KodeVT = '';
+                    try {
+                        const path = new URL(this.tiktokUrl).pathname;
+                        const parts = path.split('/').filter(part => part);
+                        KodeVT = parts[parts.length - 1];
+                        if (!KodeVT) throw new Error();
+                    } catch (e) {
+                        this.status = 'error';
+                        this.message = 'Format URL TikTok tidak valid.';
+                        return;
+                    }
+                    
+                    this.isLoading = true;
+                    this.message = '';
+                    
+                    try {
+                        const response = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                kontrol: 'proteksi',
+                                action: 'generateTikTokClaimCode', // Action diubah
+                                payload: {
+                                    KodeVT: KodeVT,
+                                    email: this.email
+                                }
+                            })
+                        });
+
+                        const result = await response.json();
+                        this.status = result.status;
+                        this.message = result.message;
+                        
+                        if(result.status === 'sukses'){
+                            this.tiktokUrl = ''; // Kosongkan form jika berhasil
+                            this.email = '';
+                        }
+
+                    } catch (error) {
+                        this.status = 'error';
+                        this.message = 'Gagal terhubung ke server. Coba lagi nanti.';
+                    } finally {
+                        this.isLoading = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
