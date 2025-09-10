@@ -33,10 +33,11 @@ const PAYMENT_METHODS = {
       { name: "ATM Bersama", code: "VA_ATMBersama_A1", disabled: false },
     ]
   },
-    "E-Wallet >> ShopeePay": {
-    isDirect: true,
+    "E-Wallet": {
+    isDirect: false,
     providers: [
       { name: "ShopeePay", code: "Wallet_ShepeePay_SA", disabled: false },
+      { name: "OVO", code: "Wallet_OVO_OV", disabled: false },
     ]
   },
     "Retail": {
@@ -48,6 +49,7 @@ const PAYMENT_METHODS = {
     ]
   }
 };
+
 
 
 
