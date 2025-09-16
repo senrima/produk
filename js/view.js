@@ -95,19 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function createProductCard(product) {
         const priceFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(product.Harga);
-
-        const isOutOfStock = !product.Stok || product.Stok <= 0;
-        
-        const disabledAttribute = isOutOfStock ? 'disabled' : '';
-        const buttonText = isOutOfStock ? 'Stok Habis' : (product.TombolTeks || 'Beli Sekarang');
-        const buttonClasses = isOutOfStock 
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-            : 'bg-blue-600 hover:bg-blue-700';
-        const stockLabel = isOutOfStock 
-            ? `<div class="absolute top-3 right-3 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-md z-10">Stok Habis</div>` 
-            : '';
-        
-        const productData = { id: product.IDProduk, name: product.NamaProduk, price: product.Harga, image: product.GambarURL, category: product.Kategori, waktuAkses: product.WaktuAkses };
+        const productData = { id: product.IDProduk, 
+                             name: product.NamaProduk, 
+                             price: product.Harga, 
+                             image: product.GambarURL, 
+                             category: product.Kategori, 
+                             waktuAkses: product.WaktuAkses 
+                            };
         const productDataString = JSON.stringify(productData);
         const videoButtonHTML = product.VideoID ? `<button class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 open-modal" data-video-id="${product.VideoID}"><svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></button>` : '';
         const buttonsHTML = `
@@ -233,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Panggil fungsi inisialisasi baru saat halaman dimuat
     initializePage();
 });
+
 
 
 
